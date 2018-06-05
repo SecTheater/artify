@@ -69,83 +69,100 @@ APP_URL=http://localhost:8000
 ```
 3- It asks about the Role model, and the permissions column which will artify handle during the generating files related to roles.
 > Artify Provides you the ability to set your custom namespace and your custom user model within config/artify.php
-![Installation Preview](www.mediafire.com/view/k9jv7zvklcc7gus/Screenshot+from+2018-06-05+13-40-45.png)
-### 4. 
-##### 4.1 Registering A User 
-Whenever you try to register a user, just supply Jarivs with the data and the slug of the role which you want to assign to this user
+![Installation Preview](https://www.amazon.com/clouddrive/share/WVQrNp9hqnEfGmj9K2wSYN3b079t4KYJuiA4hSNdnJ)
+
+Now everything is set, Let's dive into the Commands.
+### 4. Commands that artify covers.
+##### 4.1 Create an Observer
+Observer is typically observing for a particular eloquent event. On happening this event, Observer is fired, You can read about it at the documentation.
+
+
 ```bash
-	Jarvis::registerWithRole($data,'user')
+  // ? means optional.
+ // php artisan artify:observer <name of Observer> <model attached?> <methods to ignore while creating observe?r>
+ // Example 1.0
+ php artisan artify:observer Post --class="Post" created updated
 ```
-#### 4.2 Login A User
+The upon command generates an observer file within your App/Observers with name of PostObserver
+The methods there now have Post Model as parameter passed,
+The ignored methods while creating the observer ( which won't be within this file) are created and updated.
 
-Logging a user is also an easy thing to do, just pass the data the user tries to attempt with , It can be username/email and password or whatever. Then if you want to remember the user , pass the second argument with true.
+#### 4.2 Create A Responsable Interface 
+
+Responsable Interface is a Laravel 5.5 feature that you should use to make your controller slim, you can see a tutorial about it.
+https://www.youtube.com/watch?v=yKNK6MZdSrY
+
 ```bash
-	Jarvis::registerWithRole($data,true)
+	php artisan artify:response <name>
+	// Example , please try to follow the convention of naming.. <model><method>Response
+    php artisan artify:response PostShowResponse
 ```
+The command upon is going to create you a new file with the name you attached under App/Responses
 
-#### 4.3 Checking For Roles.
-<b> Let's assume I want to check whether the current logged in user has any permissions to create a post or not. It's worth mentioning that whenever you pass many elements to check on and the user has any of them, The method will return you a boolean value </b>
+#### 4.3 Synchronozing Your Roles table with Policy & Gates
+
+<b>This command is in charge of converting the available roles within your database into policy and gates</b>
+<p>It's preferable to follow the convention of naming the roles as mentioned in the Roles seeder</p>
+<p>Artify also supplies you with the migration for roles, if you are going to change the permissions column, don't forget to update that within the config file</p>
+<p>Permissions column should be an array, if they are jsonb in your database, use the accessors, or observers, or use casts property to convert permissions to an array</p>
+```
+ // Role Model
+ protected $casts = ['permissions' => 'array'];
+```
+<p>By Default this command requires the hasRole method ( it should return boolean ) , you can create your custom one within user model, or just import the Roles trait</p>
+
 ```bash
-	Jarvis::User()->hasAnyRole(['create-post']) 
+ use Artify\Artify\Traits\Roles\Roles;
+
+ Class User Extends Model {
+   use Roles;    
+ }
 ```
-We are just checking here if the user has either creating permission under the user/moderator permissions.
+This method is required to check whether the user has a specific role to access somewhere or not, It's used within the gates.
+Feel free to change the gates's logic to suit your needs.
 ```bash
-	Jarvis::User()->hasAnyRole(['create-tag','moderator.create-tag']) 
-/*
-first permission determines what the role the user has and then check if he has this permission ,
-second one checks if the user has moderator.create-tag and this should exist 
-in users table permissions column,
-as this doesn't exist in default roles table ( unless you add it )
-*/
+  php artisan artify:register-authorization
 ```
 
-Sometimes, you want to check if a specific user has all of the roles , not just any of them.
-Well That's also included.
+By Firing this command, you can use the can middleware anywhere within your route file
 ```bash
-	Jarvis::User()->hasAllRole(['create-post','edit-post'])
+  Route::get('/post/create','PostController@create')->middleware('can:create-post');
 ```
-If you want to check on only one permission, you can pass that to the HasAnyRole within an array, Or just do it like the following.
+also you can access the method can anywhere in your project.
 ```bash
-	Jarvis::User()->hasRole('view-post')
+ if($user->can('create-post')
+ // do something
 ```
-If you want to check whether the user has any of the post permissions or whatever, you can do it like the following .
+
+#### 4.4 Assign User To A Specific Rank.
+
+This command is just there to save you a couple of minutes whenever you assign a user manually to a specific role through database.
 ```bash
-  // you can use the helper also
-  jarvis()->user()->hasRole('*-post');
+ php artisan artify:assign <username> <slug>
+ //  Example : 
+ php artisan artify:assign Alex Admin
 ```
-<b> There is much more details within the <a href="http://www.sectheater.org/documentation">documentation</a>.</b>
+#### 4.5 Create A Repository
+Repository patten is absolutely a powerful pattern that you should use in order to separate logic from your database layer ( model ).
 
-### Recently Added Features
-
-#### Recent Changes
-
-- Jarvis Middleware is removed.
-
-- Policies & Gates are set automatically depending on the database roles.
-- Existing relationships Dynamically set depending on existing models either through properties or config file.
-- Observers watch models that has been bounded to the config file dynamically.
-- package_version function is added ( checks the version of any package passed to it )
-- model_exists function is now checking for the user models
-- jarvis_model_exists function only checks for Jarvis's models only.
-- recent method is added to all of Repositories ( you can fetch with it recent stuff under condition and,or approved stuff )
-- Repository Interface updated
-- Basic Repository Is updated, now you can pass to the delete and update methods either an identifier to find or the instance that should be updated/deleted.
-- make:facade command is added
-- make:response command is added
-- make:repository is added
-- package_path function is added
-- Relationships are synchronized with the related models dynamically.
-- Roles Trait is updated.
-
-#### Extra Commands are added such as :
- - sectheater:register-authorization // registers the policies and gates and publishing them , depending on your database   roles.
- - make:observer
- - sectheater:seed-db , seeding your database with the RolesSeeder and call for register-authorization ( optional)
-
-#### Fixes :
-
-- Routes in blades are fixed.
-- Jarvis routes method is fixed, removed from web file and It will be added in your Route Service Provider
-- app.blade.php is copied during running sectheater:auth if it doesn't exist
-- RegisterWithRole method is fixed.
-
+```bash
+ php artisan artify:repository <name of repo> (-m?) (-f?)
+ // -m stands for the model associated with the repository.
+ // -f create a facade for this repository, so you can call it immediately , i.e you can just do that anywhere "\MyRepository::method();"
+```
+#### 4.6 Generate a facade.
+```bash
+ php artisan artify:facade <name>
+```
+#### 4.7 Generate CRUD
+Well, This artifier is really a beast, it could save you up to 20 minutes or something , It helps you to generate the following 
+ - Model
+ - Resource Controller with the common logic you mostly do  within your methods.
+ - Request Form files for your store and update methods.
+ - Resource Route within your web file
+ - If Repository Option is enabled, It will create you the repository associating with the model.
+ 
+```bash
+ php artisan artify:crud <model-name> (-r?)
+ // -r is optional , it will generate you the repository.
+```
