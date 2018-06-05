@@ -69,7 +69,7 @@ APP_URL=http://localhost:8000
 ```
 3- It asks about the Role model, and the permissions column which will artify handle during the generating files related to roles.
 > Artify Provides you the ability to set your custom namespace and your custom user model within config/artify.php
-![Installation Preview](http://sectheater.org/assets/images/doc/installation.png)
+![Installation Preview](http://www.mediafire.com/file/k9jv7zvklcc7gus/Screenshot%20from%202018-06-05%2013-40-45.png)
 ### 4. 
 ##### 4.1 Registering A User 
 Whenever you try to register a user, just supply Jarivs with the data and the slug of the role which you want to assign to this user
