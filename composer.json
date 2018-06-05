@@ -10,5 +10,20 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {},
+    "autoload": {
+         "psr-4": {
+            "Artify\\Artify\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Artify\\Artify\\ArtifyServiceProvider"
+            ]
+        }
+    }
+
+
+    
 }
