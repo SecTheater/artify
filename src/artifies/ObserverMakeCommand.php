@@ -43,18 +43,20 @@ class ObserverMakeCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $model = strpos($name, "Observer") ? explode('Observer', $name)[0] : $name;
+        $model = strpos($name, 'Observer') ? explode('Observer', $name)[0] : $name;
 
-        if (!is_dir(app_path('/Observers')))
+        if (!is_dir(app_path('/Observers'))) {
             File::makeDirectory(app_path('/Observers'));
+        }
 
-        if (File::exists(app_path('/Observers/' . $name . '.php')))
+        if (File::exists(app_path('/Observers/'.$name.'.php'))) {
             return $this->error('Observer already exists');
+        }
 
         if (File::exists(app_path('/Providers/EloquentEventServiceProvider.php'))) {
             $provider = File::get(app_path('/Providers/EloquentEventServiceProvider.php'));
             $replacement = str_replace_last(
-                "class);",
+                'class);',
                 "class);\n\t\t\App\\$model::observe(\App\Observers\\$name::class);",
                 $provider
             );
@@ -70,9 +72,9 @@ class ObserverMakeCommand extends Command
             $this->call('make:provider', ['name' => 'EloquentEventServiceProvider']);
 
             $provider = File::get(app_path('/Providers/EloquentEventServiceProvider.php'));
-            $replacement = str_replace("public function boot()
+            $replacement = str_replace('public function boot()
     {
-        //", "public function boot()\n\t{\n\t\t\App\\$model::observe(\App\Observers\\$name::class);", $provider);
+        //', "public function boot()\n\t{\n\t\t\App\\$model::observe(\App\Observers\\$name::class);", $provider);
             File::put(app_path('/Providers/EloquentEventServiceProvider.php'), $replacement);
 
             $this->registerProvider();
@@ -81,10 +83,10 @@ class ObserverMakeCommand extends Command
         $defaultObserverContent = File::get(artify_path('artifies/stubs/DummyObserver.stub'));
         $runtimeObserverContent = str_replace('Dummy', $model, $defaultObserverContent);
         File::put(artify_path('artifies/stubs/DummyObserver.stub'), $runtimeObserverContent);
-        File::copy(artify_path('artifies/stubs/DummyObserver.stub'), app_path('/Observers/' . $name . '.php'));
+        File::copy(artify_path('artifies/stubs/DummyObserver.stub'), app_path('/Observers/'.$name.'.php'));
         File::put(artify_path('artifies/stubs/DummyObserver.stub'), $defaultObserverContent);
 
-        $this->info("Yateey! observer created successfully");
+        $this->info('Yateey! observer created successfully');
     }
 
     public function registerProvider()
@@ -96,6 +98,6 @@ class ObserverMakeCommand extends Command
             $config
         );
 
-        File::put(config_path("/app.php"), $providerRegistration);
+        File::put(config_path('/app.php'), $providerRegistration);
     }
 }
