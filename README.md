@@ -69,7 +69,7 @@ APP_URL=http://localhost:8000
 ```
 3- It asks about the Role model, and the permissions column which will artify handle during the generating files related to roles.
 > Artify Provides you the ability to set your custom namespace and your custom user model within config/artify.php
-![Installation Preview](https://www.amazon.com/clouddrive/share/WVQrNp9hqnEfGmj9K2wSYN3b079t4KYJuiA4hSNdnJ)
+![Installation Preview](http://sectheater.org/assets/images/doc/artify.png)
 
 Now everything is set, Let's dive into the Commands.
 ### 4. Commands that artify covers.
