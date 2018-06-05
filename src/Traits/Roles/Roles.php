@@ -109,7 +109,8 @@ trait Roles
 
         foreach ($permission as $key) {
             if (!isset($permissions[$key])) {
-                throw new InsufficientPermissionsException("$key Permission Does not exist for ".$this->username, 404);
+               throw new InsufficientPermissionsException("$key Permission Does not exist for user id of ".$this->id, 500);
+
             }
             if (array_key_exists($key, $permissions)) {
                 unset($permissions[$key]);
