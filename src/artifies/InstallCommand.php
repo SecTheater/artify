@@ -42,7 +42,7 @@ class InstallCommand extends Command
     public function handle()
     {
         $os = (substr(php_uname('a'), 0, 3));
-        $name = (strtoupper($os) !== 'WIN') ? posix_getpwuid(posix_geteuid())['name'] : null;
+        $name = (strtoupper($os) !== 'WIN') ? posix_getpwuid(posix_geteuid())['name'] : 'windows user';
         $time = (\Carbon\Carbon::now()->format('A') === 'AM') ? 'Morning' : 'Evening';
         $this->info("Good $time $name , Let's set a couple of things.");
         $this->call('vendor:publish', ['--provider' => ArtifyServiceProvider::class]);
@@ -52,7 +52,6 @@ class InstallCommand extends Command
         $permissionsColumn = $this->ask('Enter The Name of Permissions Column within your Role Model') ?? 'permissions';
         if ($roleModel && !$this->filesystem->exists(app_path($roleModel.'.php'))) {
             $this->call('make:model', ['name' => ucfirst(strtolower($roleModel))]);
-            dd($roleModel);
         }
 
         $this->call('config:clear');

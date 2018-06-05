@@ -14,7 +14,7 @@ class DummyController extends Controller
      */
     public function index()
     {
-        cache()->remember('dummies', 10, function () {
+        cache()->remember('dummies', config('artify.cache.duration'), function () {
             $dummies = \App\Dummy::get()->latest(10);
         });
 

@@ -12,7 +12,7 @@ class UserAssignCommand extends Command
      * @var string
      */
     protected $signature = 'artify:assign
-                {username : The username of the user}
+                {email : The email of the user}
                 {rank : The rank of the user (slug within the roles table.)}';
 
     /**
@@ -40,7 +40,8 @@ class UserAssignCommand extends Command
     public function handle()
     {
         $user = config('artify.models.namespace').config('artify.models.user');
-        $user = (new $user())->whereUsername($this->argument('username'))->first();
+        $user = (new $user())->where('email',$this->argument('email'))->first();
+
         $role = config('artify.models.namespace').config('artify.models.role');
         $role = (new $role())->whereSlug($this->argument('rank'))->first();
         if ($user && $role) {

@@ -47,6 +47,9 @@ class GenerateCrudCommand extends Command
     {
         $model = $this->argument('model');
 
+        if ($this->filesystem->exists(app_path("/Http/Controllers/{$model}Controller.php")))
+            return $this->error("Controller already exists");
+
         if (!$this->filesystem->exists(app_path($model.'.php'))) {
             $this->call('make:model', ['name' => $model]);
         }
@@ -80,7 +83,7 @@ class GenerateCrudCommand extends Command
             $this->filesystem->put(artify_path('artifies/stubs/DummyController.stub'), $runtimeControllerContent);
             $this->filesystem->copy(artify_path('artifies/stubs/DummyController.stub'), app_path('/Http/Controllers/'.$model.'Controller.php'));
             $this->filesystem->put(artify_path('artifies/stubs/DummyController.stub'), $defaultControllerContent);
-            $this->filesystem->append(base_path('routes/web.php'), "\nRoute::resource('$model','{$model}Controller');\n");
+            $this->filesystem->append(base_path('routes/web.php'), "\nRoute::resource('" . strtolower($model) . "', '{$model}Controller');");
             $this->info("{$model} crud created successfully");
         }
     }

@@ -67,8 +67,7 @@ class RegisterAuthorizationCommand extends Command
         $this->info('Registering Policies & Gates !');
         foreach ($this->views as $key => $view) {
             $originalContent = $this->filesystem->get(artify_path($key));
-            $content = $this->appendNamespaces($originalContent);
-            $content = $this->appendPolicies($content, $this->permissions);
+            $content = $this->appendPolicies($originalContent, $this->permissions);
             $content = $this->appendGates($content, array_keys($this->permissions));
             foreach ($this->permissions as $permission => $value) {
                 $model = str_singular(ucfirst($permission));
@@ -96,10 +95,6 @@ class RegisterAuthorizationCommand extends Command
         }
     }
 
-    protected function appendNamespaces($content)
-    {
-        return str_replace("namespace App\Providers;", "namespace App\Providers;\n".str_repeat("use App\DummyModel;\nuse App\Policies\DummyPolicy;", count($this->permissions)), $content);
-    }
 
     protected function appendPolicies($content, $policies)
     {
@@ -126,14 +121,14 @@ class RegisterAuthorizationCommand extends Command
 
     protected function replaceArraySegements($model, $content)
     {
-        return  str_replace_first("App\DummyModel::class => App\Policies\DummyPolicy::class", ucfirst($model)."::class => App\Policies\\{$model}Policy::class,\n", $content);
+        return  str_replace_first("App\DummyModel::class => App\Policies\DummyPolicy::class", config('artify.models.namespace') . ucfirst($model)."::class => App\Policies\\{$model}Policy::class,\n", $content);
     }
 
     protected function replaceGates($model, $content, $permissions)
     {
         foreach ($permissions as $permission) {
             $access = $permission.'-'.lcfirst($model);
-            $content = str_replace_first("Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n", "Gate::define('$access','{$model}Policy@$permission');\n", $content);
+            $content = str_replace_first("Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n", "Gate::define('$access','\App\Policies\{$model}Policy@$permission');\n", $content);
         }
 
         return $content;

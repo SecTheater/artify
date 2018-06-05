@@ -17,7 +17,7 @@ class ArtifyRolesTables extends Migration
             $table->increments('id');
             $table->string('slug')->unique();
             $table->string('name');
-            $table->text('permissions');
+            $table->jsonb('permissions');
             $table->timestamps();
         });
         Schema::create('role_users', function (Blueprint $table) {

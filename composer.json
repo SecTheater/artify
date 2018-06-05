@@ -1,6 +1,7 @@
 {
     "name": "secmohammed/artify",
     "description": "The Missing Laravel Artisan Commands",
+    "keywords" : ["Laravel Commands","Artify","Artifier"],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -25,5 +26,5 @@
     }
 
 
-    
+
 }
