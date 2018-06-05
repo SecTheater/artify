@@ -50,7 +50,7 @@ class InstallCommand extends Command
         $roleModel = $this->ask('Enter The Name of Your Role Model, If you don\'t have one, we will create it.') ?? 'Role';
         $this->info('the default column in charge of permissions within your role model is named permissions, change it or leave blank.');
         $permissionsColumn = $this->ask('Enter The Name of Permissions Column within your Role Model') ?? 'permissions';
-        if ($roleModel && !$this->filesystem->exists(app_path($roleModel . '.php'))) {
+        if ($roleModel && !$this->filesystem->exists(app_path($roleModel.'.php'))) {
             $this->call('make:model', ['name' => ucfirst(strtolower($roleModel))]);
             dd($roleModel);
         }
@@ -65,11 +65,13 @@ class InstallCommand extends Command
             config(['artify.cache.enabled' => false]);
         }
 
-        if(!array_key_exists('user', config('artify.models')))
+        if (!array_key_exists('user', config('artify.models'))) {
             config(['artify.models.user' => 'User']);
+        }
 
-        if(!array_key_exists('namespace', config('artify.models')))
+        if (!array_key_exists('namespace', config('artify.models'))) {
             config(['artify.models.namespace' => '\App\\']);
+        }
 
         $configRunTimeContent = var_export(config('artify'), true);
         $this->filesystem->put(config_path('artify.php'), '');
