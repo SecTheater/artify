@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Observers;
+
+use App\Dummy;
+
+class DummyObserver
+{
+    //
+}

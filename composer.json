@@ -1,0 +1,14 @@
+{
+    "name": "secmohammed/artify",
+    "description": "The Missing Laravel Artisan Commands",
+    "type": "laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammed Osama",
+            "email": "mohammedosama@sectheater.org"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
