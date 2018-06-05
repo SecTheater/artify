@@ -1,6 +1,7 @@
-[![StyleCI](https://styleci.io/repos/6754365/shield?branch=master)](https://styleci.io/repos/6754365)
+[![StyleCI](https://gitlab.styleci.io/repos/6754365/shield?branch=master)](https://gitlab.styleci.io/repos/6754365)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/aad0fe4a-4ddc-4357-807e-71a2c931375f/big.png)](https://insight.sensiolabs.com/projects/aad0fe4a-4ddc-4357-807e-71a2c931375f)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/82e35aa0-2a67-42dd-9aae-4eeb0ec84fdb/big.png)](https://insight.sensiolabs.com/projects/82e35aa0-2a67-42dd-9aae-4eeb0ec84fdb)
+
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/secmohammed/artify.svg?style=flat-square)](https://packagist.org/packages/secmohammed/artify)
 
