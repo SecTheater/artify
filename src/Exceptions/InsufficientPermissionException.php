@@ -2,6 +2,6 @@
 
 namespace Artify\Artify\Exceptions;
 
-class InsufficientPermissionsException extends \RuntimeException
+class InsufficientPermissionException extends \RuntimeException
 {
 }

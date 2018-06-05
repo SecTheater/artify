@@ -46,13 +46,13 @@ class RegisterAuthorizationCommand extends Command
     public function handle()
     {
         $this->info('Gathering Information of Roles');
-        $roleModel = config('artify.models.namespace') . config('artify.models.role');
-        $permissions = (new $roleModel)->pluck(config('artify.permissions_column'))->collapse();
-        $userModel = config('artify.models.namespace') . config('artify.models.user');
+        $roleModel = config('artify.models.namespace').config('artify.models.role');
+        $permissions = (new $roleModel())->pluck(config('artify.permissions_column'))->collapse();
+        $userModel = config('artify.models.namespace').config('artify.models.user');
         if (!count($permissions)) {
             return $this->error('Roles are not set yet, or maybe they are not an array.');
         }
-        if(!method_exists(new $userModel, 'hasRole')){
+        if (!method_exists(new $userModel(), 'hasRole')) {
             return $this->error('You should import the Roles Trait, or create your own hasRole method, As gates need this method.');
         }
         foreach ($permissions as $key => $value) {
@@ -78,7 +78,7 @@ class RegisterAuthorizationCommand extends Command
                 $content = $this->replaceGates($model, $content, $value);
                 $this->generatePolicyStub($model, $value);
             }
-            $content = str_replace(['use App\DummyModel;','use App\Policies\DummyPolicy;'], ['',''], $content);
+            $content = str_replace(['use App\DummyModel;', 'use App\Policies\DummyPolicy;'], ['', ''], $content);
             $this->filesystem->put(artify_path($key), $content);
             copy(
                 artify_path($key),
@@ -108,15 +108,15 @@ class RegisterAuthorizationCommand extends Command
 
     protected function appendGates($content, $policies)
     {
-        $roleModel = config('artify.models.namespace') . config('artify.models.role');
-        $permissions = (new $roleModel)->pluck(config('artify.permissions_column'))->collapse();
+        $roleModel = config('artify.models.namespace').config('artify.models.role');
+        $permissions = (new $roleModel())->pluck(config('artify.permissions_column'))->collapse();
 
         return str_replace('Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');', str_repeat("Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n\t\t", $permissions->count()), $content);
     }
 
     protected function replaceNamespaces($model, $content)
     {
-        return str_replace_first("use App\DummyModel;", 'use ' . config('artify.models.namespace'). ucfirst($model) . ';', $content);
+        return str_replace_first("use App\DummyModel;", 'use '.config('artify.models.namespace').ucfirst($model).';', $content);
     }
 
     protected function replacePolicies($model, $content)
@@ -126,7 +126,7 @@ class RegisterAuthorizationCommand extends Command
 
     protected function replaceArraySegements($model, $content)
     {
-        return  str_replace_first("App\DummyModel::class => App\Policies\DummyPolicy::class", ucfirst($model) . "::class => App\Policies\\{$model}Policy::class,\n", $content);
+        return  str_replace_first("App\DummyModel::class => App\Policies\DummyPolicy::class", ucfirst($model)."::class => App\Policies\\{$model}Policy::class,\n", $content);
     }
 
     protected function replaceGates($model, $content, $permissions)
@@ -145,7 +145,7 @@ class RegisterAuthorizationCommand extends Command
         if (str_contains($model, 'User')) {
             str_replace('use NamespacedDummyModel;', '', $originalContent);
         } else {
-            $content = str_replace('use NamespacedDummyModel;', 'use ' . config('artify.models.namespace') . ucfirst($model) . ';', $originalContent);
+            $content = str_replace('use NamespacedDummyModel;', 'use '.config('artify.models.namespace').ucfirst($model).';', $originalContent);
         }
         if (in_array('approve', $permissions)) {
             $content = str_replace('use HandlesAuthorization;', "use HandlesAuthorization;\n\tpublic function approve(User \$user,".ucfirst($model).' $'.lcfirst($model).")\n\t{\n\t\treturn \$user->hasRole('approve-".lcfirst($model)."') || \$user->id == \$".lcfirst($model)."->user_id;\n\t}", $content);
@@ -155,13 +155,13 @@ class RegisterAuthorizationCommand extends Command
             'DummyModel',
             'dummyModel',
             '-dummy',
-            '$dummy'
+            '$dummy',
         ], [
             "{$model}Policy",
             $model,
             lcfirst($model),
             '-'.lcfirst($model),
-            '$'.lcfirst($model)
+            '$'.lcfirst($model),
         ], $content);
         if (!\File::exists(app_path('Policies/'."{$model}Policy.php"))) {
             \File::makeDirectory(app_path('Policies'), 0755, false, true);
