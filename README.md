@@ -25,10 +25,10 @@ After creating your new Laravel application you can include the Jarvis package w
 ```bash
 composer require secmohammed/artify:dev-master
 ```
-If your laravel version is 5.5+, you don't need to register ArtifyServiceProvider as It's automatically discovered, unless that you got to register it manually in your config/app.php
+If your laravel version is 5.5+, you don't need to register ArtifyServiceProvider as It"s automatically discovered, unless that you got to register it manually in your config/app.php
 
 ```
-'providers' => [
+"providers" => [
    // other providers
    Artify\Artify\ArtifyServiceProvider::class
 ]
@@ -62,7 +62,7 @@ APP_URL=http://localhost:8000
 ##### Command Interpretation
 
 1- It publishes the roles migrations,its seed, and the config file that artify will use.
-2- -c stands for the caching whether to enable or not, 20 stands for the number of minutes that's going to be cached.
+2- -c stands for the caching whether to enable or not, 20 stands for the number of minutes that"s going to be cached.
 <p>If you don't want to enable the cache just remove the -c and the number to become like that</p>
 ```bash
     php artisan artify:install
@@ -71,7 +71,7 @@ APP_URL=http://localhost:8000
 > Artify Provides you the ability to set your custom namespace and your custom user model within config/artify.php
 ![Installation Preview](http://sectheater.org/assets/images/doc/artify.png)
 
-Now everything is set, Let's dive into the Commands.
+Now everything is set, Let"s dive into the Commands.
 ### 4. Commands that artify covers.
 <hr>
 ##### 4.1 Create an Observer
@@ -103,35 +103,35 @@ The command upon is going to create you a new file with the name you attached un
 #### 4.3 Synchronozing Your Roles table with Policy & Gates
 
 <b>This command is in charge of converting the available roles within your database into policy and gates</b>
-<p>It's preferable to follow the convention of naming the roles as mentioned in the Roles seeder</p>
+<p>It"s preferable to follow the convention of naming the roles as mentioned in the Roles seeder</p>
 <p>Artify also supplies you with the migration for roles, if you are going to change the permissions column, don't forget to update that within the config file</p>
 <p>Permissions column should be an array, if they are jsonb in your database, use the accessors, or observers, or use casts property to convert permissions to an array</p>
 ```
  // Role Model
- protected $casts = ['permissions' => 'array'];
+ protected $casts = ["permissions" => "array"];
 ```
 <p>By Default this command requires the hasRole method ( it should return boolean ) , you can create your custom one within user model, or just import the Roles trait</p>
 
 ```bash
- use Artify\Artify\Traits\Roles\Roles;
+ use Artify\\Artify\\Traits\\Roles\\Roles;
 
  Class User Extends Model {
    use Roles;    
  }
 ```
-This method is required to check whether the user has a specific role to access somewhere or not, It's used within the gates.
-Feel free to change the gates's logic to suit your needs.
+This method is required to check whether the user has a specific role to access somewhere or not, It"s used within the gates.
+Feel free to change the gates"s logic to suit your needs.
 ```bash
   php artisan artify:register-authorization
 ```
 
 By Firing this command, you can use the can middleware anywhere within your route file
 ```bash
-  Route::get('/post/create','PostController@create')->middleware('can:create-post');
+  Route::get("/post/create","PostController@create")->middleware("can:create-post");
 ```
 also you can access the method can anywhere in your project.
 ```bash
- if($user->can('create-post'))
+ if($user->can("create-post"))
  // do something
 ```
 <hr>
@@ -174,8 +174,8 @@ Well, This artifier is really a beast, it could save you up to 20 minutes or som
 <hr>
 ### 5.0 Roles Trait
 This trait is there to handle the authorization process for artify commands , but feel free to use it for your own purposes.
-It contains of a few methods that's really helpful for you to handle authorization anywhere within your application.
-Let's dive into the Methods there.
+It contains of a few methods that"s really helpful for you to handle authorization anywhere within your application.
+Let"s dive into the Methods there.
 > The Trait supports checking roles within your roles table and the users table ( secondary permissions to be assigned for users )  
 
 #### Authorization Methods. 
@@ -184,31 +184,31 @@ Let's dive into the Methods there.
   <p>This method accepts only one argument and it should be string, the string should match a role name within your permissions column either on users table or roles table.</p>
   ```bash
     $user = \App\User::first();
-    dd($user->hasRole('create-post')); // if the current logged in user has the ability to 'create-post', it will return true
+    dd($user->hasRole("create-post")); // if the current logged in user has the ability to "create-post", it will return true
   ```
   The method is going to search for the permission associated with the user either on roles table or users table.
 ##### 2.0 hasAnyRole Method
-  <p>I think you've guessed what's going on here, It searches for all of the roles you pass and returns true on the first role that a user may have</p>
+  <p>I think you"ve guessed what"s going on here, It searches for all of the roles you pass and returns true on the first role that a user may have</p>
   
   ```bash
-    dd($user->hasAnyRole(['create-post','foo-bar','approve-post'])); // returns true/false;
+    dd($user->hasAnyRole(["create-post","foo-bar","approve-post"])); // returns true/false;
   ```
 ##### 3.0 hasAllRole Method
  <p>This method accepts one argument, it should be an array containing of the permissions you are checking for. </p>
  This method checks on all the roles passed, whether the user has them all or not.
  
  ```bash 
-   dd($user->hasAllRole(['foo-bar','upgrade-user'])); // returns true/false;
+   dd($user->hasAllRole(["foo-bar","upgrade-user"])); // returns true/false;
  ```
  
 ##### 3.0 inRole Method
- <p>This method checks if the user's rank is typically equal to the passed argument. </p>
+ <p>This method checks if the user"s rank is typically equal to the passed argument. </p>
  - Slug that represents your permissions in role table.
  - returns boolean 
 
   
 ```bash
- dd($user->inRole('admin'); // This slug exists within the seeder
+ dd($user->inRole("admin"); // This slug exists within the seeder
 ```
 
 <hr>
@@ -223,10 +223,10 @@ Let's dive into the Methods there.
 
 
   ```bash
-     $user->addPermission('create-custom-post'); // second parameter is set to true by default, so the added permission is available for this user.
-     $user->addPermission('create-something',false) // the user isn't allowed to 'create-something' now.
-     $user->addPermission(['create-something' => true , 'can-push-code' => false]) 
-     /* you don't need the second parameter now as the key and value of this array is going to be in charge of handling the permissions. */
+     $user->addPermission("create-custom-post"); // second parameter is set to true by default, so the added permission is available for this user.
+     $user->addPermission("create-something",false) // the user isn\'t allowed to "create-something" now.
+     $user->addPermission(["create-something" => true , "can-push-code" => false]) 
+     /* you don\'t need the second parameter now as the key and value of this array is going to be in charge of handling the permissions. */
      
   ```
   
@@ -240,9 +240,9 @@ Let's dive into the Methods there.
 
 
  ```bash
-  $user->updatePermission('create-post'); // this will update the permission to set it to true.
-  $user->updatePermission('create-post',false); // this will update the permission to set it to false
-  $user->updatePermission('foo-bar',false,true); // this will create the permission if it doesn't exist and set it to false.
+  $user->updatePermission("create-post"); // this will update the permission to set it to true.
+  $user->updatePermission("create-post",false); // this will update the permission to set it to false
+  $user->updatePermission("foo-bar",false,true); // this will create the permission if it doesn\'t exist and set it to false.
  ```
  
  <hr>
@@ -255,6 +255,6 @@ Let's dive into the Methods there.
  <p>If the permission isn't set, an exception is thrown.</p>
 
  ```bash
-   $user->removePermission('create-post'); // returns boolean
-   $user->removePermission('create-post','delete-post','whatever-role',...); // returns boolean
+   $user->removePermission("create-post"); // returns boolean
+   $user->removePermission("create-post","delete-post","whatever-role",...); // returns boolean
  ```
