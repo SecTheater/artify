@@ -1,5 +1,5 @@
 {
-    "name": "secmohammed/artify",
+    "name": "sectheater/artify",
     "description": "The Missing Laravel Artisan Commands",
     "keywords" : ["Laravel Commands","Artify","Artifier"],
     "type": "library",
