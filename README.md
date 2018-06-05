@@ -7,29 +7,15 @@
 <!-- [![Total Downloads](https://img.shields.io/packagist/dt/secmohammed/artify.svg?style=flat-square)](https://packagist.org/packages/secmohammed/artify) -->
 
 <p align="center"> Made with ❤️ by  SecTheater Foundation:  http://www.sectheater.org</p>
-<p align="center">Package Documentation : http://www.sectheater.org/documentation
-</p>
 
-> the Jarvis CheatSheet will be availble soon 
+> Artify CheatSheet will be availble soon 
 
 
 <hr>
 
-## Jarvis provides you the following :
-### 1. Authentication System
-Login, Register, Reminders,Security Questions for reseting passwords and Activations.
-### 2. Comment System & Reply System
-### 3. Like/Dislike System
-You could always like,dislike anything such as comments,replies and posts. Also you could reset this like so the user's like or dislike is removed
-### 4. Upgrading & Downgrading Users
-### 5. Approving Anything
-You could approve anything just by providing the model and the ID of the record you wish to approve
-### 6.Tag
-Assign Tags to whatever on your application
-> You can Assign one tag or multiple tags within one text input and you can set the separator dynamically
-
-### 7. Authorizing Users & Managing Roles.
-
+<p>Laravel is a great framework and it provides us to create our custom artisan commands, so why not to have a couple of commands that makes your life easier while develping your application. </p>
+<b>If you have any inspiration about a new command , or you do something routinely and you want a command for that , Please do not hesitate at all.</b>
+<p>Artify cares about the commands that you should have within your application, till now it ships with commands that will help you to create files that laravel don't supply a command for them till now such as Repositories,Observers,Responsable Interface,facades and so on..</p>
 ## Installation Steps
 
 ### 1. Require the Package
