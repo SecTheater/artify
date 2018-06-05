@@ -73,6 +73,7 @@ APP_URL=http://localhost:8000
 
 Now everything is set, Let's dive into the Commands.
 ### 4. Commands that artify covers.
+<hr>
 ##### 4.1 Create an Observer
 Observer is typically observing for a particular eloquent event. On happening this event, Observer is fired, You can read about it at the documentation.
 
@@ -86,7 +87,7 @@ Observer is typically observing for a particular eloquent event. On happening th
 The upon command generates an observer file within your App/Observers with name of PostObserver
 The methods there now have Post Model as parameter passed,
 The ignored methods while creating the observer ( which won't be within this file) are created and updated.
-
+<hr>
 #### 4.2 Create A Responsable Interface 
 
 Responsable Interface is a Laravel 5.5 feature that you should use to make your controller slim, you can see a tutorial about it.
@@ -98,7 +99,7 @@ https://www.youtube.com/watch?v=yKNK6MZdSrY
     php artisan artify:response PostShowResponse
 ```
 The command upon is going to create you a new file with the name you attached under App/Responses
-
+<hr>
 #### 4.3 Synchronozing Your Roles table with Policy & Gates
 
 <b>This command is in charge of converting the available roles within your database into policy and gates</b>
@@ -133,7 +134,7 @@ also you can access the method can anywhere in your project.
  if($user->can('create-post'))
  // do something
 ```
-
+<hr>
 #### 4.4 Assign User To A Specific Rank.
 
 This command is just there to save you a couple of minutes whenever you assign a user manually to a specific role through database.
@@ -142,6 +143,7 @@ This command is just there to save you a couple of minutes whenever you assign a
  //  Example : 
  php artisan artify:assign Alex Admin
 ```
+<hr>
 #### 4.5 Create A Repository
 Repository patten is absolutely a powerful pattern that you should use in order to separate logic from your database layer ( model ).
 
@@ -150,10 +152,12 @@ Repository patten is absolutely a powerful pattern that you should use in order 
  // -m stands for the model associated with the repository.
  // -f create a facade for this repository, so you can call it immediately , i.e you can just do that anywhere "\MyRepository::method();"
 ```
+<hr>
 #### 4.6 Generate a facade.
 ```bash
  php artisan artify:facade <name>
 ```
+<hr>
 #### 4.7 Generate CRUD
 Well, This artifier is really a beast, it could save you up to 20 minutes or something , It helps you to generate the following 
  - Model
@@ -162,10 +166,12 @@ Well, This artifier is really a beast, it could save you up to 20 minutes or som
  - Resource Route within your web file
  - If Repository Option is enabled, It will create you the repository associating with the model.
  
+
 ```bash
  php artisan artify:crud <model-name> (-r?)
  // -r is optional , it will generate you the repository.
 ```
+<hr>
 ### 5.0 Roles Trait
 This trait is there to handle the authorization process for artify commands , but feel free to use it for your own purposes.
 It contains of a few methods that's really helpful for you to handle authorization anywhere within your application.
@@ -199,10 +205,13 @@ Let's dive into the Methods there.
  <p>This method checks if the user's rank is typically equal to the passed argument. </p>
  - Slug that represents your permissions in role table.
  - returns boolean 
+
   
 ```bash
  dd($user->inRole('admin'); // This slug exists within the seeder
 ```
+
+<hr>
 
 #### Permissions Handling Methods.
 <b>The permissions are assigned to the current user you are working on only. i.e you can retrieve the user by finding him/her or get the authenticated user then handle his/her permisisons.</b>
@@ -211,28 +220,40 @@ Let's dive into the Methods there.
    - Permissions can be either string or array.
    - boolean value represents the ability of the user to do mentioned permission.
    - returns boolean.
+
+
   ```bash
      $user->addPermission('create-custom-post'); // second parameter is set to true by default, so the added permission is available for this user.
      $user->addPermission('create-something',false) // the user isn't allowed to 'create-something' now.
-     $user->addPermission(['create-something' => true , 'can-push-code' => false]) // you don't need the second parameter now as the key and value of this array is going to be in charge of handling the permissions.
+     $user->addPermission(['create-something' => true , 'can-push-code' => false]) 
+     /* you don't need the second parameter now as the key and value of this array is going to be in charge of handling the permissions. */
      
   ```
+  
+  <hr>
 #####  2.0 Update Permission 
  <p> This method accepts three arguments</p>
  - Permission , should be a string.
  - boolean value represents the ability of the user to do mentioned permission.
  - boolean value , represents creating the permission if it doesn't exist.
  - returns boolean.
+
+
  ```bash
   $user->updatePermission('create-post'); // this will update the permission to set it to true.
   $user->updatePermission('create-post',false); // this will update the permission to set it to false
   $user->updatePermission('foo-bar',false,true); // this will create the permission if it doesn't exist and set it to false.
  ```
+ 
+ <hr>
 ##### 3.0 Remove Permission 
  <p>This method accepts one argument only representing the permission</p>
  - n of permissions can be passed a separate parameter.
  - returns boolean
+
+
  <p>If the permission isn't set, an exception is thrown.</p>
+
  ```bash
    $user->removePermission('create-post'); // returns boolean
    $user->removePermission('create-post','delete-post','whatever-role',...); // returns boolean
