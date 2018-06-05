@@ -47,7 +47,7 @@ class UserAssignCommand extends Command
             $user->update([config('artify.permissions_column') => null]);
             $user->{strtolower(str_plural(config('artify.models.role')))}()->sync($role);
 
-            return $this->info("$user->first_name  Role is set to  `{$role->name}`");
+            return $this->info("$user->first_name  Role is set to  `{$role->slug}`");
         }
 
         return $this->error('User Or Role Does not exist');
