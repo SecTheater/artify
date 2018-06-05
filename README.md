@@ -1,10 +1,10 @@
-[![StyleCI](https://styleci.io/repos/119122531/shield?branch=master)](https://styleci.io/repos/119122531)
+[![StyleCI](https://styleci.io/repos/6754365/shield?branch=master)](https://styleci.io/repos/119122531)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/aad0fe4a-4ddc-4357-807e-71a2c931375f/big.png)](https://insight.sensiolabs.com/projects/aad0fe4a-4ddc-4357-807e-71a2c931375f)
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/sectheater/laravel-jarvis.svg?style=flat-square)](https://packagist.org/packages/sectheater/laravel-jarvis)
+[![Latest Version on Packagist](https://img.shields.io/packagist/vs/ecmohammed/artify.svg?style=flat-square)](https://packagist.org/packages/secmohammed/artify)
 
-<!-- [![Total Downloads](https://img.shields.io/packagist/dt/sectheater/laravel-jarvis.svg?style=flat-square)](https://packagist.org/packages/sectheater/laravel-jarvis) -->
+<!-- [![Total Downloads](https://img.shields.io/packagist/dt/secmohammed/artify.svg?style=flat-square)](https://packagist.org/packages/secmohammed/artify) -->
 
 <p align="center"> Made with ❤️ by  SecTheater Foundation:  http://www.sectheater.org</p>
 <p align="center">Package Documentation : http://www.sectheater.org/documentation
