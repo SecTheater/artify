@@ -2,8 +2,8 @@
 
 namespace Artify\Artify\Artifies;
 
+use File;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 
 class ObserverMakeCommand extends Command
 {
@@ -12,29 +12,27 @@ class ObserverMakeCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'artify:observer {name : name of the observer.} {--class= : name of the model} {except?* : generate all Eloquent events except for specific ones.}';
+    protected $signature = 'artify:observer
+                            {name : The name of the observer to be created}
+                            {--m|model : Creates the model for this observer}
+                            {--p|provider=true : Creates the events eloquent service provider for observers}
+    ';
 
-    protected $events = [
-        'retrieved', 'creating', 'created', 'updating', 'updated',
-        'saving', 'saved', 'restoring', 'restored',
-        'deleting', 'deleted', 'forceDeleted',
-    ];
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new observer class';
+    protected $description = 'Creates an observer for your models';
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(Filesystem $filesystem)
+    public function __construct()
     {
         parent::__construct();
-        $this->filesystem = $filesystem;
     }
 
     /**
@@ -44,51 +42,60 @@ class ObserverMakeCommand extends Command
      */
     public function handle()
     {
-        if (!$this->filesystem->isDirectory(app_path('Observers'))) {
-            $this->filesystem->makeDirectory(app_path('Observers'), 0755, false, true);
-            $this->info('Observers folder generated !');
+        $name = $this->argument('name');
+        $model = strpos($name, "Observer") ? explode('Observer', $name)[0] : $name;
+
+        if (!is_dir(app_path('/Observers')))
+            File::makeDirectory(app_path('/Observers'));
+
+        if (File::exists(app_path('/Observers/' . $name . '.php')))
+            return $this->error('Observer already exists');
+
+        if (File::exists(app_path('/Providers/EloquentEventServiceProvider.php'))) {
+            $provider = File::get(app_path('/Providers/EloquentEventServiceProvider.php'));
+            $replacement = str_replace_last(
+                "class);",
+                "class);\n\t\t\App\\$model::observe(\App\Observers\\$name::class);",
+                $provider
+            );
+
+            File::put(app_path('/Providers/EloquentEventServiceProvider.php'), $replacement);
         }
-        if (!$this->filesystem->exists(app_path('Observers'.DIRECTORY_SEPARATOR.$this->argument('name').'Observer.php'))) {
-            $hasModel = trim($this->option('class')) != '' ? trim($this->option('class')) : null;
-            if ($hasModel) {
-                $model = '\\App\\'.ucfirst($hasModel);
-                $model = new $model();
-                $model = $model->getObservableEvents();
-                $loweredCaseModel = lcfirst($this->option('class'));
-            } else {
-                $model = $this->events;
-                $loweredCaseModel = null;
-            }
-            $fileContent = '';
-            $if = function ($condition, $applied, $rejected) {
-                return $condition ? $applied : $rejected;
-            };
-            foreach ($model as $event) {
-                if (in_array($event, $this->argument('except'))) {
-                    continue;
-                }
-                $fileContent .= <<<Event
-    public function {$event}({$if($hasModel, "$hasModel", '')} {$if($hasModel && isset($loweredCaseModel), "\$$loweredCaseModel" ?? null, '')}){
-                    
+
+        if ($this->option('model')) {
+            $this->call('make:model', ['name' => $model]);
+        }
+
+        if ($this->option('provider')) {
+            $this->call('make:provider', ['name' => 'EloquentEventServiceProvider']);
+
+            $provider = File::get(app_path('/Providers/EloquentEventServiceProvider.php'));
+            $replacement = str_replace("public function boot()
+    {
+        //", "public function boot()\n\t{\n\t\t\App\\$model::observe(\App\Observers\\$name::class);", $provider);
+            File::put(app_path('/Providers/EloquentEventServiceProvider.php'), $replacement);
+
+            $this->registerProvider();
+        }
+
+        $defaultObserverContent = File::get(artify_path('artifies/stubs/DummyObserver.stub'));
+        $runtimeObserverContent = str_replace('Dummy', $model, $defaultObserverContent);
+        File::put(artify_path('artifies/stubs/DummyObserver.stub'), $runtimeObserverContent);
+        File::copy(artify_path('artifies/stubs/DummyObserver.stub'), app_path('/Observers/' . $name . '.php'));
+        File::put(artify_path('artifies/stubs/DummyObserver.stub'), $defaultObserverContent);
+
+        $this->info("Yateey! observer created successfully");
     }
 
-Event;
-            }
-            $fileContent = <<<content
-<?php
-namespace \App\Observers;
+    public function registerProvider()
+    {
+        $config = File::get(config_path('/app.php'));
+        $providerRegistration = str_replace(
+            "App\Providers\AppServiceProvider::class,",
+            "App\Providers\AppServiceProvider::class,\n\t\tApp\Providers\EloquentEventServiceProvider::class,",
+            $config
+        );
 
-{$if(isset($hasModel) && !empty($hasModel), "use \App\\$hasModel;", '')}
-
-class {$this->argument('name')}Observer {
-    {$fileContent}
-}
-?>
-content;
-            $this->filesystem->put(app_path('Observers'.DIRECTORY_SEPARATOR.$this->argument('name').'Observer.php'), $fileContent);
-            $this->info('Observer Created !');
-        } else {
-            $this->info('Observer Already Exists ! , Wake up you need some caffeine :)');
-        }
+        File::put(config_path("/app.php"), $providerRegistration);
     }
 }
