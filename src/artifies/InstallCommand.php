@@ -47,11 +47,12 @@ class InstallCommand extends Command
         $this->info("Good $time $name , Let's set a couple of things.");
         $this->call('vendor:publish', ['--provider' => ArtifyServiceProvider::class]);
         $this->info('Tip : You can modify the config/artify.php manually');
-        $roleModel = $this->ask('Enter The Name of Your Role Model, If you don\'t have one, we will create it.');
+        $roleModel = $this->ask('Enter The Name of Your Role Model, If you don\'t have one, we will create it.') ?? 'Role';
         $this->info('the default column in charge of permissions within your role model is named permissions, change it or leave blank.');
         $permissionsColumn = $this->ask('Enter The Name of Permissions Column within your Role Model') ?? 'permissions';
-        if ($roleModel && !$this->filesystem->exists(app_path($roleModel.'.php'))) {
-            $this->call('make:model', ['name' => ucfirst($roleModel)]);
+        if ($roleModel && !$this->filesystem->exists(app_path($roleModel . '.php'))) {
+            $this->call('make:model', ['name' => ucfirst(strtolower($roleModel))]);
+            dd($roleModel);
         }
 
         $this->call('config:clear');
@@ -63,6 +64,13 @@ class InstallCommand extends Command
         } else {
             config(['artify.cache.enabled' => false]);
         }
+
+        if(!array_key_exists('user', config('artify.models')))
+            config(['artify.models.user' => 'User']);
+
+        if(!array_key_exists('namespace', config('artify.models')))
+            config(['artify.models.namespace' => '\App\\']);
+
         $configRunTimeContent = var_export(config('artify'), true);
         $this->filesystem->put(config_path('artify.php'), '');
         $configRunTimeContent = str_replace(['array (', ')'], ['[', ']'], $configRunTimeContent);
