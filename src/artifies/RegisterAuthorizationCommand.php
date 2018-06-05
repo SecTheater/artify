@@ -14,7 +14,7 @@ class RegisterAuthorizationCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'artify:register-authorization {--i|import-roles}';
+    protected $signature = 'artify:register-authorization';
     /**
      * The console command description.
      *
