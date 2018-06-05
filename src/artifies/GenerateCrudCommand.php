@@ -12,7 +12,10 @@ class GenerateCrudCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'artify:crud {model : The name of your model} {--r|repository : Use repository instead of using models}';
+    protected $signature = 'artify:crud
+                            {model : The name of your model}
+                            {--r|repository : Use repository instead of using models}
+    ';
 
     /**
      * The console command description.
@@ -44,15 +47,15 @@ class GenerateCrudCommand extends Command
     {
         $model = $this->argument('model');
 
-        if (!$this->filesystem->exists(app_path($model.'.php'))) {
+        if (!$this->filesystem->exists(app_path($model . '.php'))) {
             $this->call('make:model', ['name' => $model]);
         }
 
-        if (!$this->filesystem->exists(app_path('/Http/Requests/'.$model.'StoreRequestForm.php'))) {
+        if (!$this->filesystem->exists(app_path('/Http/Requests/' . $model . 'StoreRequestForm.php'))) {
             $this->call('make:request', ['name' => "{$model}StoreRequestForm"]);
         }
 
-        if (!$this->filesystem->exists(app_path('/Http/Requests/'.$model.'UpdateRequestForm.php'))) {
+        if (!$this->filesystem->exists(app_path('/Http/Requests/' . $model . 'UpdateRequestForm.php'))) {
             $this->call('make:request', ['name' => "{$model}UpdateRequestForm"]);
         }
 
@@ -60,13 +63,18 @@ class GenerateCrudCommand extends Command
             $this->call('artify:repository', ['name' => "{$model}Repository"]);
         }
 
-        if (!$this->filesystem->exists(app_path('/Http/Controllers/'.$model.'Controller.php'))) {
+        if (!$this->filesystem->exists(app_path('/Http/Controllers/' . $model . 'Controller.php'))) {
             $defaultControllerContent = $this->filesystem->get(artify_path('artifies/stubs/DummyController.stub'));
+            if (!config('artify.cache.enabled')) {
+                $runtimeControllerContent = str_replace(["cache()->forget('dummies');\n", "cache('dummies')", 'cache()->remember(\'dummies\', 10, function () {
+            $dummies = \App\Dummy::get()->latest(10);
+        });'], ["", '$dummies', '$dummies = \App\Dummy::get()->latest(10);'], $defaultControllerContent);
+            }
 
             $runtimeControllerContent = str_replace(
                 ['dummy', 'Dummy', 'dummies'],
                 [strtolower($model), ucfirst($model), strtolower(str_plural($model))],
-                $defaultControllerContent
+                $runtimeControllerContent ?? $defaultControllerContent
             );
 
             $this->filesystem->put(artify_path('artifies/stubs/DummyController.stub'), $runtimeControllerContent);
