@@ -15,7 +15,7 @@
 
 <p>Laravel is a great framework and it provides us to create our custom artisan commands, so why not to have a couple of commands that makes your life easier while develping your application. </p>
 <b>If you have any inspiration about a new command , or you do something routinely and you want a command for that , Please do not hesitate at all.</b>
-<p>Artify cares about the commands that you should have within your application, till now it ships with commands that will help you to create files that laravel don't supply a command for them till now such as Repositories,Observers,Responsable Interface,facades and so on..</p>
+<p>Artify cares about the commands that you should have within your application, for now, it ships with commands that will help you to create files that laravel don't supply a command for them till now such as Repositories,Observers,Responsable Interface,facades and so on..</p>
 ## Installation Steps
 
 ### 1. Require the Package
@@ -23,9 +23,16 @@
 After creating your new Laravel application you can include the Jarvis package with the following command: 
 
 ```bash
-composer require sectheater/laravel-jarvis:dev-master
+composer require secmohammed/artify:dev-master
 ```
+If your laravel version is 5.5+, you don't need to register ArtifyServiceProvider as It's automatically discovered, unless that you got to register it manually in your config/app.php
 
+```
+'providers' => [
+   // other providers
+   Artify\Artify\ArtifyServiceProvider::class
+]
+```
 ### 2. Add the DB Credentials & APP_URL
 
 Next make sure to create a new database and add your database credentials to your .env file:
@@ -49,17 +56,21 @@ APP_URL=http://localhost:8000
 
 
 ```bash
-	php artisan sectheater:install
+	php artisan artify:install -c 20
 ```
 
 ##### Command Interpretation
 
-1- It sets up your config file by registering whatever you confirm within the survey, in case you use *Everything* option that command supplies, the default configuration will be used. If you ever want to change anything , go to your config/jarvis.php and set whatever you need.
-2- It will provide you a survey so the package sets up which features have to be enabled.
-3- It also sets up the authentication routes.
-> Jarvis doesn't depend on models at all, Everything runs through the repositories to provide you the best quality.
+1- It publishes the roles migrations,its seed, and the config file that artify will use.
+2- -c stands for the caching whether to enable or not, 20 stands for the number of minutes that's going to be cached.
+<p>If you don't want to enable the cache just remove the -c and the number to become like that</p>
+```bash
+    php artisan artify:install
+```
+3- It asks about the Role model, and the permissions column which will artify handle during the generating files related to roles.
+> Artify Provides you the ability to set your custom namespace and your custom user model within config/artify.php
 ![Installation Preview](http://sectheater.org/assets/images/doc/installation.png)
-### 4. Sample Usage
+### 4. 
 ##### 4.1 Registering A User 
 Whenever you try to register a user, just supply Jarivs with the data and the slug of the role which you want to assign to this user
 ```bash
