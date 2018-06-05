@@ -130,7 +130,7 @@ By Firing this command, you can use the can middleware anywhere within your rout
 ```
 also you can access the method can anywhere in your project.
 ```bash
- if($user->can('create-post')
+ if($user->can('create-post'))
  // do something
 ```
 
