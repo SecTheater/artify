@@ -1,7 +1,7 @@
 {
     "name": "secmohammed/artify",
     "description": "The Missing Laravel Artisan Commands",
-    "type": "laravel",
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
