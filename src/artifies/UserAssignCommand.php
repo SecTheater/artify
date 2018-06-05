@@ -39,12 +39,11 @@ class UserAssignCommand extends Command
      */
     public function handle()
     {
-        $user = config('artify.models.namespace') . config('artify.models.user');
-        $user = (new $user)->whereUsername($this->argument('username'))->first();
-        $role = config('artify.models.namespace') . config('artify.models.role');
-        $role = (new $role)->whereSlug($this->argument('rank'))->first();
+        $user = config('artify.models.namespace').config('artify.models.user');
+        $user = (new $user())->whereUsername($this->argument('username'))->first();
+        $role = config('artify.models.namespace').config('artify.models.role');
+        $role = (new $role())->whereSlug($this->argument('rank'))->first();
         if ($user && $role) {
-
             $user->update(['permissions' => null]);
             $user->{strtolower(str_plural(config('artify.models.role')))}()->sync($role);
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Artify\Artify\Traits\Roles;
 
 use Artify\Artify\Exceptions\InsufficientPermissionsException;

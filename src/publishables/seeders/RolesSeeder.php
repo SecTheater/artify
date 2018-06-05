@@ -1,7 +1,7 @@
 <?php
 
+use App\Role;
 use Illuminate\Database\Seeder;
-use \App\Role;
 
 class RolesSeeder extends Seeder
 {
@@ -12,8 +12,8 @@ class RolesSeeder extends Seeder
      */
     public function run()
     {
-        $role = config('artify.models.namespace') . config('artify.models.role');
-        $role = new $role;
+        $role = config('artify.models.namespace').config('artify.models.role');
+        $role = new $role();
         $admin = $role->create([
             'slug'        => 'admin',
             'name'        => 'Administrator',

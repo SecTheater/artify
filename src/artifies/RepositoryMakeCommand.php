@@ -43,35 +43,42 @@ class RepositoryMakeCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $model = strpos($name, "Repository") ? explode('Repository', $name)[0] : $name;
+        $model = strpos($name, 'Repository') ? explode('Repository', $name)[0] : $name;
 
-        if (!is_dir(app_path('/Repositories')))
+        if (!is_dir(app_path('/Repositories'))) {
             File::makeDirectory(app_path('/Repositories'));
+        }
 
-        if (!is_dir(app_path('/Repositories/Contracts')))
+        if (!is_dir(app_path('/Repositories/Contracts'))) {
             File::makeDirectory(app_path('/Repositories/Contracts'));
+        }
 
-        if (!File::exists(app_path('/Repositories/Contracts/RepositoryInterface.stub')))
+        if (!File::exists(app_path('/Repositories/Contracts/RepositoryInterface.stub'))) {
             File::copy(artify_path('artifies/stubs/RepositoryInterface.stub'), app_path('/Repositories/Contracts/RepositoryInterface.php'));
+        }
 
-        if (!File::exists(app_path('/Repositories/Repository.php')))
+        if (!File::exists(app_path('/Repositories/Repository.php'))) {
             File::copy(artify_path('artifies/stubs/Repository.stub'), app_path('/Repositories/Repository.php'));
+        }
 
-        if (File::exists(app_path('/Repositories/' . $name . '.php')))
-            return $this->error("Repository already exists");
+        if (File::exists(app_path('/Repositories/'.$name.'.php'))) {
+            return $this->error('Repository already exists');
+        }
 
-        if ($this->option('model'))
+        if ($this->option('model')) {
             $this->call('make:model', ['name' => $model]);
+        }
 
-        if ($this->option('facade'))
+        if ($this->option('facade')) {
             $this->call('artify:facade', ['name' => $name]);
+        }
 
         $defaultRepositoryContent = File::get(artify_path('artifies/stubs/DummyRepository.stub'));
         $runtimeRepositoryContent = str_replace(['Dummy'], [ucfirst($model)], $defaultRepositoryContent);
         File::put(artify_path('artifies/stubs/DummyRepository.stub'), $runtimeRepositoryContent);
-        File::copy(artify_path('artifies/stubs/DummyRepository.stub'), app_path('/Repositories/' . $name . '.php'));
+        File::copy(artify_path('artifies/stubs/DummyRepository.stub'), app_path('/Repositories/'.$name.'.php'));
         File::put(artify_path('artifies/stubs/DummyRepository.stub'), $defaultRepositoryContent);
 
-        $this->info("Yeey! Repository created successfully");
+        $this->info('Yeey! Repository created successfully');
     }
 }
