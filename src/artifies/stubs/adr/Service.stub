@@ -1,0 +1,16 @@
+<?php
+
+namespace App\DummyDomain\Domain\Services;
+
+use App\App\Domain\Payloads\GenericPayload;
+use App\App\Domain\Services\Service;
+use App\DummyDomain\Domain\Repositories\DummyRepository;
+class DummyNameService extends Service {
+    protected $dummies;
+    public function __construct(DummyRepository $dummies) {
+        $this->dummies = $dummies;
+    }
+    public function handle($data = []) {
+        return new GenericPayload($this->dummies->all());
+    }
+}
