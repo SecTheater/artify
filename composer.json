@@ -1,0 +1,30 @@
+{
+    "name": "sectheater/artify",
+    "description": "The Missing Laravel Artisan Commands",
+    "keywords" : ["Laravel Commands","Artify","Artifier"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammed Osama",
+            "email": "mohammedosama@sectheater.org"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+         "psr-4": {
+            "Artify\\Artify\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Artify\\Artify\\ArtifyServiceProvider"
+            ]
+        }
+    }
+
+
+
+}

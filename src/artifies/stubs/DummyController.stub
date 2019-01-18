@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Dummy;
+use Illuminate\Http\Request;
+use App\Http\Requests\{DummyStoreRequestForm, DummyUpdateRequestForm};
+
+class DummyController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        cache()->remember('dummies', config('artify.cache.duration'), function () {
+            return Dummy::latest()->get();
+        });
+
+        return view('dummies.index', ['dummies' => cache('dummies')]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('dummies.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\DummyStoreRequestForm  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(DummyStoreRequestForm $request)
+    {
+        Dummy::create($request->validated());
+
+        cache()->forget('dummies');
+
+        return redirect()->route('dummies.index');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Dummy  $dummy
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Dummy $dummy)
+    {
+        return view('dummies.show', compact('dummy'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Dummy  $dummy
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Dummy $dummy)
+    {
+        return view('dummies.edit', compact('dummy'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Dummy  $dummy
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Dummy $dummy, DummyUpdateRequestForm $request)
+    {
+        $dummy->update($request->validated());
+
+        cache()->forget('dummies');
+
+        return redirect()->route('dummies.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Dummy  $dummy
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Dummy $dummy)
+    {
+        $dummy->delete();
+
+        cache()->forget('dummies');
+
+        return redirect()->route('dummies.index');
+    }
+}

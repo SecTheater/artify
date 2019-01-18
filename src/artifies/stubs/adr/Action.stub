@@ -1,0 +1,18 @@
+<?php
+
+namespace App\DummyDomain\Actions;
+
+use App\DummyDomain\Domain\Services\DummyService;
+use App\DummyDomain\Responders\DummyResponder;
+
+class DummyAction {
+    public function __construct(DummyResponder $responder, DummyService $services) {
+        $this->responder = $responder;
+        $this->services = $services;
+    }
+    public function __invoke() {
+        return $this->responder->withResponse(
+            $this->services->handle()
+        )->respond();
+    }
+}

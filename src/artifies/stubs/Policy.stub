@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Policies;
+
+use App\User;
+use NamespacedDummyModel;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class DummyClass
+{
+    use HandlesAuthorization;
+
+    public function view(User $user, DummyModel $dummyModel)
+    {
+        return $user->hasRole('view-dummy');
+    }
+
+    public function create(User $user)
+    {
+        return $user->hasRole('create-dummy');
+    }
+
+    public function update(User $user, DummyModel $dummyModel)
+    {
+        return $user->hasRole('update-dummy') || $dummy->user_id == $user->id;
+    }
+
+    public function delete(User $user, DummyModel $dummyModel)
+    {
+        return $user->hasRole('delete-dummy') || $dummy->user_id == $user->id;
+    }
+}

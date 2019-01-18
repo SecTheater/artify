@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Providers;
+
+use DummyNamespacedModel;
+use DummyNamespacedRepository;
+use Illuminate\Support\ServiceProvider;
+
+class EloquentServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+    * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton('DummyRepository', function () {
+            return new DummyRepository(new DummyModel);
+        });
+    }
+}
