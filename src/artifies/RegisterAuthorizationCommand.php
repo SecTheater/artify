@@ -55,6 +55,10 @@ class RegisterAuthorizationCommand extends Command
         }
 
         if (config('artify.adr.enabled')) {
+            if (!count(config('artify.adr.domains'))) {
+                return $this->error('You should fill up the domains key inside config/artify.php with the domains you wish to register authorization for.');
+            }
+
             $domains = collect(config('artify.adr.domains'))->mapToDictionary(function($domain) use($permissions){
                 return [ 
                     $domain => $permissions->filter(function($value, $permission) use($domain) {
