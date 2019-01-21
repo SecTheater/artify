@@ -49,6 +49,8 @@ class InstallCommand extends Command {
 		$structure = $this->choice('Ehum Ehum, what sturcture do you follow ?', ['ADR', 'MVC'], 'MVC');
 		if ($structure === 'ADR') {
 			config(['artify.adr.enabled' => true]);
+			config(['artify.adr.domains' => []]);
+
 			$this->call('adr:install');
 		} else {
 			config(['artify.adr.enabled' => false]);
