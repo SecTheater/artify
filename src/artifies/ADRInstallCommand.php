@@ -38,6 +38,8 @@ class ADRInstallCommand extends Command
     {
         $this->hasOrCreateDirectory('App');
         $this->recursive_copy($this->from_directory , $this->to_directory);
+        $this->info('ADR architecture has been set');
+
     }
     public function recursive_copy($src,$dst) {
         $dir = opendir($src);
