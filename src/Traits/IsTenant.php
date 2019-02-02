@@ -9,11 +9,6 @@ use Illuminate\Support\Str;
 trait IsTenant {
 	public static function boot() {
 		parent::boot();
-
-		static::creating(function ($tenant) {
-			$tenant->uuid = (string) Str::uuid();
-		});
-
 		static::created(function ($tenant) {
 			$tenant->tenantConnection()->save(static::newDatabaseConnection($tenant));
 		});
