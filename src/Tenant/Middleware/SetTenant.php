@@ -3,6 +3,8 @@
 namespace Artify\Artify\Tenant\Middleware;
 
 use Artify\Artify\Contracts\Models\Tenant;
+use Artify\Artify\Tenant\Events\TenantIdentified;
+
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 
