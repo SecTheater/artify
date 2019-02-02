@@ -20,6 +20,10 @@ class RegisterTenant
      */
     public function handle(TenantIdentified $event)
     {
+        if (!session('tenant')) {
+            session(['tenant' => $event->tenant->id]);
+        }
+
         app(Manager::class)->setTenant($event->tenant);
         $this->db->createConnection($event->tenant);
     }
