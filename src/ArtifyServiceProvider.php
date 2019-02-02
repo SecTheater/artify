@@ -12,6 +12,8 @@ use Artify\Artify\Contracts\Models\Tenant;
 use Artify\Artify\Tenant\Database\DatabaseAdapter;
 use Artify\Artify\Tenant\Database\DatabaseFactory;
 use Artify\Artify\Tenant\Database\DatabaseManager;
+use Artify\Artify\Tenant\Events\TenantIdentified;
+use Artify\Artify\Tenant\Listeners\RegisterTenant;
 use Artify\Artify\Tenant\Manager;
 use Illuminate\Database\DatabaseManager as BaseDatabaseManager;
 use Illuminate\Filesystem\Filesystem;
@@ -45,7 +47,7 @@ class ArtifyServiceProvider extends ServiceProvider {
 		$this->app->singleton(DatabaseManager::class, function () {
 			return new DatabaseManager(app(BaseDatabaseManager::class), app(DatabaseFactory::class));
 		});
-
+		\Event::listen(TenantIdentified::class, RegisterTenant::class);
 	}
 
 	/**
