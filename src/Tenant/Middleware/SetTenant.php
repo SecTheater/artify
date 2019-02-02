@@ -23,7 +23,7 @@ class SetTenant
             app()->bind(Tenant::class, config('artify.tenant'));
         }
 
-        optional($this->resolveTenant(session('tenant')), function ($tenant) use ($request) {
+        optional($this->resolveTenant(session('tenant') ?? $request->tenant), function ($tenant) use ($request) {
             if (!auth()->user()->{str_plural(app(Tenant::class)->getTable())}->contains('id', $tenant->id)) {
                 throw new AuthenticationException(
                     'Unauthenticated.', [], $this->redirectTo($request)
