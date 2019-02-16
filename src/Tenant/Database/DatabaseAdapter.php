@@ -18,7 +18,7 @@ class DatabaseAdapter implements DatabaseAdapterInterface {
 	}
 
 	protected function getConnectionInstance($tenant = null) {
-		$connection = 'Artify\\Artify\\Tenant\\Database\\' . $this->trasnformConnection();
+		$connection = 'Artify\\Artify\\Tenant\\Database\\' . $this->transformConnection();
 
 		return new $connection($tenant ?? app(Tenant::class));
 	}
@@ -30,7 +30,7 @@ class DatabaseAdapter implements DatabaseAdapterInterface {
 			'Postgres', 'MySQL', 'SQLite',
 		];
 	}
-	protected function trasnformConnection() {
+	protected function transformConnection() {
 		return str_replace($this->connections, $this->actualConnectionDriversName(), $this->connection) . 'Creator';
 	}
 	public function getConnections() {
