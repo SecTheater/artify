@@ -10,7 +10,7 @@ return [
     /*
      * Artify Uses cache in order to optimize your application performance, feel free to disable it or modify the duration.
      * Duration estimated in minutes.
-    */
+     */
     'cache' => [
         'enabled' => true,
         'duration' => 10,

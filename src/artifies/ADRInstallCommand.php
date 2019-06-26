@@ -41,6 +41,7 @@ class ADRInstallCommand extends Command
     {
         $this->hasOrCreateDirectory('App');
         $this->recursive_copy($this->from_directory, $this->to_directory);
+        $this->info('ADR architecture has been set');
     }
     public function recursive_copy($src, $dst)
     {
@@ -49,9 +50,9 @@ class ADRInstallCommand extends Command
         while (($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {
                 if (is_dir($src . '/' . $file)) {
-                    $this->recursive_copy($src .'/'. $file, $dst .'/'. $file);
+                    $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
                 } else {
-                    copy($src .'/'. $file, $dst .'/'. str_replace('stub', 'php', $file));
+                    copy($src . '/' . $file, $dst . '/' . str_replace('stub', 'php', $file));
                 }
             }
         }

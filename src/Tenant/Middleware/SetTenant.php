@@ -30,7 +30,7 @@ class SetTenant
     }
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             return route('home');
         }
     }

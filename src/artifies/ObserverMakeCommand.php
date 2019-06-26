@@ -2,7 +2,6 @@
 
 namespace Artify\Artify\Artifies;
 
-use File;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Console\ObserverMakeCommand as BasicObserverMakeCommand;
@@ -48,7 +47,7 @@ class ObserverMakeCommand extends BasicObserverMakeCommand
 
         parent::handle();
         if (!str_contains($name, '\\')) {
-            $name = '\\App\\Observers\\'. $name;
+            $name = '\\App\\Observers\\' . $name;
         }
 
         if ($this->files->exists(app_path('/Providers/EloquentEventServiceProvider.php')) && $this->option('model')) {

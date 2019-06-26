@@ -1,5 +1,4 @@
 <?php
-
 namespace Artify\Artify\Artifies\Tenant;
 
 use Artify\Artify\Traits\AcceptsMultipleTenants;

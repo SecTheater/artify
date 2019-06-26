@@ -5,8 +5,10 @@ namespace App\DummyDomain\Responders;
 use App\App\Responders\Responder;
 use App\App\Responders\ResponderInterface;
 
-class DummyResponder extends Responder implements ResponderInterface {
-    public function respond() {
+class DummyResponder extends Responder implements ResponderInterface 
+{
+    public function respond() 
+    {
         //
     }
 }

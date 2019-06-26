@@ -7,8 +7,7 @@ use Illuminate\Database\DatabaseManager as BaseDatabaseManager;
 
 class DatabaseManager
 {
-    protected $db;
-    protected $factory;
+    protected $db, $factory;
     public function __construct(BaseDatabaseManager $db, DatabaseFactory $factory)
     {
         $this->db = $db;

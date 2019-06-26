@@ -1,5 +1,4 @@
 <?php
-
 namespace Artify\Artify\Artifies;
 
 use Illuminate\Console\Command;
@@ -61,7 +60,7 @@ class ADRCommandGenerator extends Command
                         '--model' => $this->domain . '\\Domain\\Models\\' . $customName,
                     ]);
                     $this->call('artify:repository', [
-                        'name' => 'App\\' . $this->domain . '\\Domain\\Repositories\\' . $customName . 'Repository'
+                        'name' => 'App\\' . $this->domain . '\\Domain\\Repositories\\' . $customName . 'Repository',
                     ]);
                 } else {
                     if ($filename == 'Service.stub') {
@@ -91,7 +90,6 @@ class ADRCommandGenerator extends Command
             return (app_path($this->domain . '/Domain/' . str_plural($stubName[0]) . '/' . $customName . '.php'));
         }
         $customName = $this->name . $stubName[0];
-
         return app_path($this->domain . '/' . str_plural($stubName[0]) . '/' . $customName . '.php');
     }
     protected function hasOrFetchDummyFile($file)

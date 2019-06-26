@@ -6,8 +6,8 @@ use Illuminate\Filesystem\Filesystem;
 
 abstract class GeneratorCommand extends BaseGeneratorCommand
 {
-    protected const MVC_MODE = 0;
-    protected const ADR_MODE = 1;
+    const MVC_MODE = 0;
+    const ADR_MODE = 1;
     public function __construct(Filesystem $files)
     {
         parent::__construct($files);
@@ -22,6 +22,6 @@ abstract class GeneratorCommand extends BaseGeneratorCommand
     }
     protected function getClassName($name)
     {
-        return str_replace($this->getNamespace($name).'\\', '', $name);
+        return str_replace($this->getNamespace($name) . '\\', '', $name);
     }
 }

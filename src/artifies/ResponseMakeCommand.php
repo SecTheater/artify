@@ -24,6 +24,6 @@ class ResponseMakeCommand extends GeneratorCommand
     }
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Responses';
+        return $rootNamespace . '\Responses';
     }
 }

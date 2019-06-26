@@ -1,5 +1,4 @@
 <?php
-
 namespace Artify\Artify\Artifies;
 
 use Illuminate\Console\Command;
@@ -12,7 +11,6 @@ class FacadeMakeCommand extends GeneratorCommand
      * @var string
      */
     protected $signature = 'artify:facade {name : The name of the facade to be created}';
-
     /**
      * The console command description.
      *
@@ -25,7 +23,6 @@ class FacadeMakeCommand extends GeneratorCommand
      * @var string
      */
     protected $type = 'Facade';
-
     /**
      * Execute the console command.
      *
@@ -37,9 +34,8 @@ class FacadeMakeCommand extends GeneratorCommand
     }
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Facades';
+        return $rootNamespace . '\Facades';
     }
-
     protected function replaceNamespace(&$stub, $name)
     {
         $stub = str_replace(
@@ -47,13 +43,11 @@ class FacadeMakeCommand extends GeneratorCommand
             [$this->getNamespace($name)],
             $stub
         );
-
         return $this;
     }
     protected function replaceClass($stub, $name)
     {
-        $class = str_replace($this->getNamespace($name).'\\', '', $name);
-
+        $class = str_replace($this->getNamespace($name) . '\\', '', $name);
         return str_replace('DummyTarget', $class, parent::replaceClass($stub, $name));
     }
 }
