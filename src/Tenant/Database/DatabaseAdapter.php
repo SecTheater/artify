@@ -27,7 +27,7 @@ class DatabaseAdapter implements DatabaseAdapterInterface {
 	}
 	protected function actualConnectionDriversName() {
 		return [
-			'Postgres', 'MySQL', 'SQLite',
+			'Postgres', 'MySQL',
 		];
 	}
 	protected function transformConnection() {
