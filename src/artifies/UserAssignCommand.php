@@ -41,7 +41,7 @@ class UserAssignCommand extends Command
      */
     public function handle()
     {
-        $user = User::where('email',$this->argument('email'))->firstOrFail();
+        $user = User::where('email', $this->argument('email'))->firstOrFail();
 
         $role = Role::whereSlug($this->argument('rank'))->firstOrFail();
         $user->update([config('artify.permissions_column') => null]);

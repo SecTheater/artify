@@ -56,7 +56,7 @@ class RegisterAuthorizationCommand extends Command
         }
 
         if (config('artify.is_adr')) {
-            $domains = collect($this->filesystem->directories(app_path()))->map(function($value){
+            $domains = collect($this->filesystem->directories(app_path()))->map(function ($value) {
                 $domain = array_last(explode('/', $value));
                 if (in_array($domain, ['App','Console','Exceptions', 'Http','Providers','Responses','Policies'])) {
                     return;
@@ -64,9 +64,9 @@ class RegisterAuthorizationCommand extends Command
                 return $domain;
             })->reject(function ($name) {
                 return empty($name);
-            })->mapToDictionary(function($domain) use($permissions){
-                return [ 
-                    $domain => $permissions->filter(function($value, $permission) use($domain) {
+            })->mapToDictionary(function ($domain) use ($permissions) {
+                return [
+                    $domain => $permissions->filter(function ($value, $permission) use ($domain) {
                         return str_contains($permission, strtolower(str_singular($domain)));
                     })
                 ];
@@ -76,16 +76,15 @@ class RegisterAuthorizationCommand extends Command
                 $this->currentDomain = $domain;
                 $this->qualifyClass();
             }
-        }else {
+        } else {
             $this->preparePermissions($permissions);
             $this->qualifyClass();
-
         }
     }
 
     protected function preparePermissions($permissions)
     {
-        $this->permissions = $permissions->mapToDictionary(function($value, $key){
+        $this->permissions = $permissions->mapToDictionary(function ($value, $key) {
             $key = explode('-', $key);
             return [ str_plural($key[1]) => $key[0]];
         });
@@ -132,11 +131,11 @@ class RegisterAuthorizationCommand extends Command
     {
         return $this->setContent(
             str_replace(
-                'App\DummyModel::class => App\Policies\DummyPolicy::class', 
+                'App\DummyModel::class => App\Policies\DummyPolicy::class',
                 str_repeat(
-                    "App\DummyModel::class => App\Policies\DummyPolicy::class,\n\t\t", 
+                    "App\DummyModel::class => App\Policies\DummyPolicy::class,\n\t\t",
                     $this->permissions->count()
-                ), 
+                ),
                 $this->getContent()
             )
         );
@@ -146,11 +145,13 @@ class RegisterAuthorizationCommand extends Command
     {
         return $this->setContent(
             str_replace(
-                'Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');', 
-                str_repeat("Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n\t\t", 
+                'Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');',
+                str_repeat(
+                    "Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n\t\t",
                     config('artify.is_adr') ? count($this->permissions[strtolower($this->currentDomain)]) : $this->permissions->collapse()->count()
-                ), 
-            $this->getContent())
+                ),
+                $this->getContent()
+            )
         );
     }
     protected function getDomainDirectory()
@@ -170,7 +171,6 @@ class RegisterAuthorizationCommand extends Command
             }
             return config('artify.models.namespace');
         });
-
     }
     protected function getDomainModelNamespace()
     {
@@ -180,7 +180,6 @@ class RegisterAuthorizationCommand extends Command
             }
             return config('artify.models.namespace');
         });
-
     }
     protected function getDomainPolicyNamespace()
     {
@@ -190,7 +189,6 @@ class RegisterAuthorizationCommand extends Command
             }
             return "App\Policies\\";
         });
-
     }
     protected function replaceModelNamespace($model)
     {
@@ -207,8 +205,8 @@ class RegisterAuthorizationCommand extends Command
     {
         return $this->setContent(
             str_replace_first(
-                "App\\DummyModel::class => App\\Policies\\DummyPolicy::class", 
-                $this->getDomainModelNamespace() . "{$model}::class => " . $this->getDomainPolicyNamespace() . "{$model}Policy::class", 
+                "App\\DummyModel::class => App\\Policies\\DummyPolicy::class",
+                $this->getDomainModelNamespace() . "{$model}::class => " . $this->getDomainPolicyNamespace() . "{$model}Policy::class",
                 $this->getContent()
             )
         );
@@ -230,9 +228,8 @@ class RegisterAuthorizationCommand extends Command
         } else {
             $content = str_replace('use NamespacedDummyModel;', 'use ' .$this->getDomainModelNamespace() .ucfirst($model).';', $originalContent);
         }
-        if(in_array('approve',$permissions)){
+        if (in_array('approve', $permissions)) {
             $content = str_replace('use HandlesAuthorization;', "use HandlesAuthorization;\n\tpublic function approve(User \$user,".ucfirst($model).' $'.lcfirst($model).")\n\t{\n\t\treturn \$user->hasRole('approve-".lcfirst($model)."') || \$user->id == \$".lcfirst($model)."->user_id;\n\t}", $content);
-
         }
         $content = str_replace([
             'DummyClass',
@@ -264,14 +261,12 @@ class RegisterAuthorizationCommand extends Command
             }
             return app_path('Policies/');
         });
-
     }
     protected function transferContent($source, $destination, $content)
     {
-
         $originalContent = $this->filesystem->get($source);
         $this->filesystem->put($source, $content);
-        copy($source,$destination);
+        copy($source, $destination);
         $this->filesystem->put($source, $originalContent);
         return $this;
     }

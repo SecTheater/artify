@@ -4,7 +4,8 @@ namespace Artify\Artify\Artifies;
 use Illuminate\Console\GeneratorCommand as BaseGeneratorCommand;
 use Illuminate\Filesystem\Filesystem;
 
-abstract class GeneratorCommand extends BaseGeneratorCommand {
+abstract class GeneratorCommand extends BaseGeneratorCommand
+{
     protected const MVC_MODE = 0;
     protected const ADR_MODE = 1;
     public function __construct(Filesystem $files)

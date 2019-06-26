@@ -31,7 +31,8 @@ class FacadeMakeCommand extends GeneratorCommand
      *
      * @return mixed
      */
-    protected function getStub(){
+    protected function getStub()
+    {
         return base_path('vendor/laravel/framework/src/illuminate/foundation/stubs/facade.stub');
     }
     protected function getDefaultNamespace($rootNamespace)

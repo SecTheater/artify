@@ -47,8 +47,9 @@ class GenerateCrudCommand extends Command
     {
         $model = $this->argument('model');
 
-        if ($this->filesystem->exists(app_path("/Http/Controllers/{$model}Controller.php")))
+        if ($this->filesystem->exists(app_path("/Http/Controllers/{$model}Controller.php"))) {
             return $this->error("Controller already exists");
+        }
 
         if (!$this->filesystem->exists(app_path($model.'.php'))) {
             $this->call('make:model', ['name' => $model]);
@@ -66,17 +67,16 @@ class GenerateCrudCommand extends Command
 
         if ($this->option('repository')) {
             $this->call('artify:repository', ['name' => "{$model}Repository"]);
-            $runtimeControllerContent = str_replace(['$dummy->delete();','$dummy->update(request()->all());','Dummy::latest()','Dummy::create(request()->all());'],['\DummyRepository::delete($dummy->id);','\DummyRepository::update($dummy->id, request()->all());','\DummyRepository::latest()','\DummyRepository::create(request()->all());'],$defaultControllerContent);
+            $runtimeControllerContent = str_replace(['$dummy->delete();','$dummy->update(request()->all());','Dummy::latest()','Dummy::create(request()->all());'], ['\DummyRepository::delete($dummy->id);','\DummyRepository::update($dummy->id, request()->all());','\DummyRepository::latest()','\DummyRepository::create(request()->all());'], $defaultControllerContent);
         }
 
         if (!$this->filesystem->exists(app_path('/Http/Controllers/'.$model.'Controller.php'))) {
             if (!config('artify.cache.enabled')) {
-                    $layerName = strpos($runtimeControllerContent ?? $defaultControllerContent, '\DummyRepository') ? '\DummyRepository' : 'Dummy';
-                    if($this->option('repository')){
-                        $assignedLayer = '$dummies = \\' . $model .'Repostiroy::latest()->get();';
-
-                    }
-                    $runtimeControllerContent = str_replace(["cache()->forget('dummies');\n", "cache('dummies')",'cache()->remember(\'dummies\', config(\'artify.cache.duration\'), function () {
+                $layerName = strpos($runtimeControllerContent ?? $defaultControllerContent, '\DummyRepository') ? '\DummyRepository' : 'Dummy';
+                if ($this->option('repository')) {
+                    $assignedLayer = '$dummies = \\' . $model .'Repostiroy::latest()->get();';
+                }
+                $runtimeControllerContent = str_replace(["cache()->forget('dummies');\n", "cache('dummies')",'cache()->remember(\'dummies\', config(\'artify.cache.duration\'), function () {
             $dummies = ' . $layerName . '::latest()->get();
         });'], ['', '$dummies', $assignedLayer ?? '$dummies = Dummy::latest()->get();'], $runtimeControllerContent ?? $defaultControllerContent);
             }

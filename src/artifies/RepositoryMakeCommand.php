@@ -47,8 +47,7 @@ class RepositoryMakeCommand extends Command
         if (str_contains($name, '\\')) {
             $location = $this->filesystem->transformNamespaceToLocation($name);
             $filename = $this->filesystem->getFileName($name);
-
-        }else {
+        } else {
             $location = 'app/Repositories';
             $filename = $name;
         }
@@ -64,7 +63,6 @@ class RepositoryMakeCommand extends Command
             $repositoryLocation = app_path('App/Domain/Repositories/');
             $this->filesystem->makeDirectory($contractLocation, 0755, true, true);
             $this->filesystem->makeDirectory($repositoryLocation, 0755, true, true);
-            
         }
         if (!config('artify.is_adr') && !is_dir(app_path('Repositories/Contracts'))) {
             $contractLocation = app_path('Repositories/Contracts/');
@@ -72,7 +70,7 @@ class RepositoryMakeCommand extends Command
             $this->filesystem->makeDirectory($contractLocation, 0755, true, true);
         }
         if (isset($contractLocation) && !$this->filesystem->exists($contractLocation . 'RepositoryInterface.php')) {
-            copy(artify_path('artifies/stubs/RepositoryInterface.stub'),  $contractLocation . 'RepositoryInterface.php');
+            copy(artify_path('artifies/stubs/RepositoryInterface.stub'), $contractLocation . 'RepositoryInterface.php');
         }
 
         if (isset($repositoryLocation) && !$this->filesystem->exists($repositoryLocation . 'Repository.php')) {
@@ -81,7 +79,7 @@ class RepositoryMakeCommand extends Command
         $namespacedModel = config('artify.is_adr') ? $this->filesystem->getNamespaceFromLocation(substr($location, 0, strrpos($location, '/'))) . '\\Models\\' . $model : config('artify.models.namespace') . $model;
         if ($this->option('model')) {
             if (config('artify.is_adr')) {
-                $this->call('make:model',[
+                $this->call('make:model', [
                     'name' => $namespacedModel
                 ]);
             }

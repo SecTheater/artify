@@ -26,6 +26,4 @@ class ResponseMakeCommand extends GeneratorCommand
     {
         return $rootNamespace.'\Responses';
     }
-
-
 }

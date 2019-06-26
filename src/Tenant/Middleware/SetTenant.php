@@ -19,10 +19,11 @@ class SetTenant
         optional($this->resolveTenant(session('tenant')), function ($tenant) {
             if (!auth()->user()->{str_plural(app(Tenant::class)->getTable())}->contains('id', $tenant->id)) {
                 throw new AuthenticationException(
-                    'Unauthenticated.', [], $this->redirectTo($request)
+                    'Unauthenticated.',
+                    [],
+                    $this->redirectTo($request)
                 );
             }
-
         });
 
         return $next($request);
@@ -35,7 +36,6 @@ class SetTenant
     }
     protected function resolveTenant($uuid)
     {
-        return app(Tenant::class)->where('uuid',$uuid)->first();
+        return app(Tenant::class)->where('uuid', $uuid)->first();
     }
-
 }

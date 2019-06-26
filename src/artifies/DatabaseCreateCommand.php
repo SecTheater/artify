@@ -37,19 +37,19 @@ class DatabaseCreateCommand extends Command
      */
     public function handle()
     {
-        try{
+        try {
             $dbname = $this->argument('dbname');
             $connection = $this->hasArgument('connection') && $this->argument('connection') ? $this->argument('connection') : config('database.default');
 
             $hasDb = \DB::connection($connection)->select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = "."'".$dbname."'");
 
-            if(empty($hasDb)) {
+            if (empty($hasDb)) {
                 \DB::connection($connection)->select('CREATE DATABASE '. $dbname);
                 $this->info("Database '$dbname' created for '$connection' connection");
-            }else {
+            } else {
                 $this->info("Database $dbname already exists for $connection connection");
             }
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
     }

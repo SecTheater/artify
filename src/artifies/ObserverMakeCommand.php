@@ -44,7 +44,6 @@ class ObserverMakeCommand extends BasicObserverMakeCommand
 
         if ($this->option('model')) {
             $this->call('make:model', ['name' => $this->option('model')]);
-            
         }
 
         parent::handle();
@@ -88,6 +87,5 @@ class ObserverMakeCommand extends BasicObserverMakeCommand
 
             $this->files->put(config_path('/app.php'), $providerRegistration);
         }
-
     }
 }
