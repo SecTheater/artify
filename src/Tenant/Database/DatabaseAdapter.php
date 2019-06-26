@@ -5,7 +5,7 @@ use Artify\Artify\Contracts\Database\DatabaseAdapterInterface;
 use Artify\Artify\Contracts\Models\Tenant;
 
 class DatabaseAdapter implements DatabaseAdapterInterface {
-	protected $connections = ['pgsql', 'sqlite', 'mysql'];
+	protected $connections = ['pgsql', 'mysql'];
 	protected $connection = null;
 	public function __construct($connection) {
 		$this->connection = $connection;
