@@ -39,6 +39,7 @@ class SetTenant
     }
     protected function resolveTenant($uuid)
     {
-        return app(Tenant::class)->where('uuid', $uuid)->first();
+        $tenant = app(Tenant::class);
+        return $tenant->where($tenant->getRouteKeyName(), $uuid)->first();
     }
 }
