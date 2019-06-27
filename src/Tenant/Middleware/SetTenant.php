@@ -18,7 +18,6 @@ class SetTenant
      */
     public function handle($request, Closure $next)
     {
-
         optional($this->resolveTenant(session('tenant')), function ($tenant) {
             if (!auth()->user()->{str_plural(app(Tenant::class)->getTable())}->contains('id', $tenant->id)) {
                 throw new AuthenticationException(
