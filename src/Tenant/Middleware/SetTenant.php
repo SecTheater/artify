@@ -1,6 +1,7 @@
 <?php
 
 namespace Artify\Artify\Tenant\Middleware;
+use Artify\Artify\Contracts\Models\Tenant;
 
 use Closure;
 use Illuminate\Auth\AuthenticationException;
