@@ -21,7 +21,7 @@ class RegisterTenant
     public function handle(TenantIdentified $event)
     {
         if (!session('tenant')) {
-            session(['tenant' => $event->tenant->id]);
+            session(['tenant' => $event->tenant->{$event->tenant->getRouteKeyName()}]);
         }
 
         app(Manager::class)->setTenant($event->tenant);
