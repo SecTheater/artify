@@ -18,7 +18,10 @@ class CreateTenantConnectionsTable extends Migration
             $table->unsignedBigInteger('tenant_id');
             $table->string('database');
             $table->timestamps();
-            $table->foreign('tenant_id')->references('id')->on(str_plural(app(config('artify.tenant'))->getTable()));
+            if (config('artify.tenant') && app(config('artify.tenant'))) {
+                $table->foreign('tenant_id')->references('id')->on(str_plural(app(config('artify.tenant'))->getTable()));
+            }
+
         });
     }
 
