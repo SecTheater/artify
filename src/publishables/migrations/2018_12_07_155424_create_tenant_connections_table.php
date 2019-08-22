@@ -14,8 +14,8 @@ class CreateTenantConnectionsTable extends Migration
     public function up()
     {
         Schema::create('tenant_connections', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('tenant_id')->unsigned()->index();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('tenant_id');
             $table->string('database');
             $table->timestamps();
             $table->foreign('tenant_id')->references('id')->on(str_plural(app(config('artify.tenant'))->getTable()));
