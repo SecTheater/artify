@@ -3,6 +3,7 @@
 namespace Artify\Artify\Traits\Roles;
 
 use Artify\Artify\Exceptions\InsufficientPermissionsException;
+use Str;
 
 trait Roles
 {
@@ -51,12 +52,12 @@ trait Roles
             return true;
         }
         foreach ($roles as $key => $value) {
-            if ((str_is($role, $key) || str_is($key, $role)) && $value === true) {
+            if ((Str::is($role, $key) || Str::is($key, $role)) && $value === true) {
                 return true;
             }
         }
         foreach ($secondary_roles as $key => $value) {
-            if ((str_is($role, $key) || str_is($key, $role)) && $value === true) {
+            if ((Str::is($role, $key) || Str::is($key, $role)) && $value === true) {
                 return true;
             }
         }

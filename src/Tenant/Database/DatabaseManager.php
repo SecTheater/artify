@@ -4,6 +4,7 @@ namespace Artify\Artify\Tenant\Database;
 
 use Artify\Artify\Contracts\Models\Tenant;
 use Illuminate\Database\DatabaseManager as BaseDatabaseManager;
+use Str;
 
 class DatabaseManager
 {
@@ -50,7 +51,7 @@ class DatabaseManager
     }
     protected function prepareTenantConnection($tenant)
     {
-        return str_contains($this->getConfigConnectionPath(), 'sqlite') ?
+        return Str::contains($this->getConfigConnectionPath(), 'sqlite') ?
         ['database' => database_path($tenant->tenantConnection->database . '.sqlite')] : $tenant->tenantConnection->only('database');
     }
     public function hasDatabase(Tenant $tenant)

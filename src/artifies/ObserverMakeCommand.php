@@ -5,6 +5,7 @@ namespace Artify\Artify\Artifies;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Console\ObserverMakeCommand as BasicObserverMakeCommand;
+use Str;
 
 class ObserverMakeCommand extends BasicObserverMakeCommand
 {
@@ -52,7 +53,7 @@ class ObserverMakeCommand extends BasicObserverMakeCommand
 
         if ($this->files->exists(app_path('/Providers/EloquentEventServiceProvider.php')) && $this->option('model')) {
             $provider = $this->files->get(app_path('/Providers/EloquentEventServiceProvider.php'));
-            $replacement = str_replace_last(
+            $replacement = Str::replaceLast(
                 'class);',
                 "class);\n\t\t{$this->option('model')}::observe($name::class);",
                 $provider

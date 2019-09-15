@@ -5,6 +5,7 @@ use Artify\Artify\Models\Role;
 use Illuminate\Console\Command;
 use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Filesystem\Filesystem;
+use Str;
 
 class RegisterAuthorizationCommand extends Command
 {
@@ -58,7 +59,7 @@ class RegisterAuthorizationCommand extends Command
             $domains = collect(config('artify.adr.domains'))->mapToDictionary(function ($domain) use ($permissions) {
                 return [
                     $domain => $permissions->filter(function ($value, $permission) use ($domain) {
-                        return str_contains($permission, strtolower(str_singular($domain)));
+                        return Str::contains($permission, strtolower(Str::singular($domain)));
                     }),
                 ];
             });
@@ -79,7 +80,7 @@ class RegisterAuthorizationCommand extends Command
     {
         $this->permissions = $permissions->mapToDictionary(function ($value, $key) {
             $key = explode('-', $key);
-            return [str_plural($key[1]) => $key[0]];
+            return [Str::plural($key[1]) => $key[0]];
         });
     }
     protected function registerServiceProvider()
@@ -125,7 +126,7 @@ class RegisterAuthorizationCommand extends Command
     {
         $this->appendPolicies()->appendGates();
         foreach ($this->permissions as $permission => $value) {
-            $model = str_singular(ucfirst($permission));
+            $model = Str::singular(ucfirst($permission));
             $this->replacePolicies($model)->replaceGates($model, $value);
             $this->generatePolicyStub($model, $value);
         }
@@ -198,7 +199,7 @@ class RegisterAuthorizationCommand extends Command
     protected function replaceModelNamespace($model)
     {
         return $this->setContent(
-            str_replace_first(
+            Str::replaceFirst(
                 'App\DummyModel',
                 $this->getDomainModelNamespace() . ucfirst($model),
                 $this->getContent()
@@ -208,7 +209,7 @@ class RegisterAuthorizationCommand extends Command
     protected function replacePolicies($model)
     {
         return $this->setContent(
-            str_replace_first(
+            Str::replaceFirst(
                 "App\\DummyModel::class => App\\Policies\\DummyPolicy::class",
                 $this->getDomainModelNamespace() . "{$model}::class => " . $this->getDomainPolicyNamespace() . "{$model}Policy::class",
                 $this->getContent()
@@ -219,14 +220,14 @@ class RegisterAuthorizationCommand extends Command
     {
         foreach ($permissions as $permission) {
             $access = $permission . '-' . lcfirst($model);
-            $this->setContent(str_replace_first("Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n", "Gate::define('$access',\"{$this->getDomainPolicyNamespace()}{$model}Policy@$permission\");\n", $this->getContent()));
+            $this->setContent(Str::replaceFirst("Gate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');\n", "Gate::define('$access',\"{$this->getDomainPolicyNamespace()}{$model}Policy@$permission\");\n", $this->getContent()));
         }
         return $this;
     }
     protected function generatePolicyStub($model, $permissions)
     {
         $originalContent = $this->filesystem->get(artify_path('artifies/stubs/Policy.stub'));
-        if (str_contains($model, 'User')) {
+        if (Str::contains($model, 'User')) {
             $content = str_replace(['use NamespacedDummyModel;', ', DummyModel $dummyModel'], '', $originalContent);
         } else {
             $content = str_replace('use NamespacedDummyModel;', 'use ' . $this->getDomainModelNamespace() . ucfirst($model) . ';', $originalContent);

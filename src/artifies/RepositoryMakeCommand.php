@@ -3,6 +3,7 @@ namespace Artify\Artify\Artifies;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Str;
 
 class RepositoryMakeCommand extends Command
 {
@@ -40,7 +41,7 @@ class RepositoryMakeCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        if (str_contains($name, '\\')) {
+        if (Str::contains($name, '\\')) {
             $location = $this->filesystem->transformNamespaceToLocation($name);
             $filename = $this->filesystem->getFileName($name);
         } else {

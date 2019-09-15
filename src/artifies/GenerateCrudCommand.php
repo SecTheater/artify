@@ -3,6 +3,7 @@ namespace Artify\Artify\Artifies;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Str;
 
 class GenerateCrudCommand extends Command
 {
@@ -66,11 +67,11 @@ class GenerateCrudCommand extends Command
                 }
                 $runtimeControllerContent = str_replace(["cache()->forget('dummies');\n", "cache('dummies')", 'cache()->remember(\'dummies\', config(\'artify.cache.duration\'), function () {
             $dummies = ' . $layerName . '::latest()->get();
-        });'], ['', '$dummies', $assignedLayer ?? '$dummies = Dummy::latest()->get();'], $runtimeControllerContent ?? $defaultControllerContent);
+        });', ], ['', '$dummies', $assignedLayer ?? '$dummies = Dummy::latest()->get();'], $runtimeControllerContent ?? $defaultControllerContent);
             }
             $runtimeControllerContent = str_replace(
                 ['dummy', 'Dummy', 'dummies'],
-                [strtolower($model), ucfirst($model), strtolower(str_plural($model))],
+                [strtolower($model), ucfirst($model), strtolower(Str::plural($model))],
                 $runtimeControllerContent ?? $defaultControllerContent
             );
             $this->filesystem->put(artify_path('artifies/stubs/DummyController.stub'), $runtimeControllerContent);

@@ -3,6 +3,7 @@ namespace Artify\Artify\Artifies;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Str;
 
 class ADRCommandGenerator extends Command
 {
@@ -42,10 +43,10 @@ class ADRCommandGenerator extends Command
         $this->setFiles();
         foreach ($this->files as $filename) {
             if (in_array($filename, $this->requiresDomain)) {
-                $customName = str_singular($this->domain);
-                $this->hasOrCreateDirectory($this->domain . '/Domain/' . str_plural(explode('.', $filename)[0]));
+                $customName = Str::singular($this->domain);
+                $this->hasOrCreateDirectory($this->domain . '/Domain/' . Str::plural(explode('.', $filename)[0]));
             } else {
-                $this->hasOrCreateDirectory($this->domain . '/' . str_plural(explode('.', $filename)[0]));
+                $this->hasOrCreateDirectory($this->domain . '/' . Str::plural(explode('.', $filename)[0]));
                 $customName = null;
             }
             if ($originalContent = $this->hasOrFetchDummyFile($filename)) {
@@ -64,9 +65,9 @@ class ADRCommandGenerator extends Command
                     ]);
                 } else {
                     if ($filename == 'Service.stub') {
-                        $fileContent = str_replace(['DummyDomain', 'DummyName', 'Dummy', 'dummies', 'dummy'], [$this->domain, $this->name, str_singular($this->domain), strtolower($this->domain), strtolower(str_singular($this->domain))], $originalContent);
+                        $fileContent = str_replace(['DummyDomain', 'DummyName', 'Dummy', 'dummies', 'dummy'], [$this->domain, $this->name, Str::singular($this->domain), strtolower($this->domain), strtolower(Str::singular($this->domain))], $originalContent);
                     } else {
-                        $fileContent = str_replace(['DummyDomain', 'Dummy', 'dummies', 'dummy'], [$this->domain, $customName ?? $this->name, strtolower(str_plural($customName ?? $this->name)), strtolower($customName ?? $this->name)], $originalContent);
+                        $fileContent = str_replace(['DummyDomain', 'Dummy', 'dummies', 'dummy'], [$this->domain, $customName ?? $this->name, strtolower(Str::plural($customName ?? $this->name)), strtolower($customName ?? $this->name)], $originalContent);
                     }
                     $this->filesystem->put(__DIR__ . '/stubs/adr/' . $filename, $fileContent);
                     $this->filesystem->copy(__DIR__ . '/stubs/adr/' . $filename, $this->getMovingFilePath($filename));
@@ -82,15 +83,15 @@ class ADRCommandGenerator extends Command
             if ($filename == 'Service.stub') {
                 $customName = $this->name . $stubName[0];
             } else {
-                $customName = str_singular($this->domain);
+                $customName = Str::singular($this->domain);
                 if ($filename != 'Model.stub') {
                     $customName .= $stubName[0];
                 }
             }
-            return (app_path($this->domain . '/Domain/' . str_plural($stubName[0]) . '/' . $customName . '.php'));
+            return (app_path($this->domain . '/Domain/' . Str::plural($stubName[0]) . '/' . $customName . '.php'));
         }
         $customName = $this->name . $stubName[0];
-        return app_path($this->domain . '/' . str_plural($stubName[0]) . '/' . $customName . '.php');
+        return app_path($this->domain . '/' . Str::plural($stubName[0]) . '/' . $customName . '.php');
     }
     protected function hasOrFetchDummyFile($file)
     {
