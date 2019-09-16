@@ -24,7 +24,7 @@ trait IsTenant
     public static function newDatabaseConnection(Tenant $tenant)
     {
         return new TenantConnection([
-            'database' => str_slug(config('app.name')) . '_' . $tenant->id,
+            'database' => Str::slug(config('app.name')) . '_' . $tenant->id,
         ]);
     }
 
