@@ -2,144 +2,71 @@
 
 namespace Artify\Artify\Traits\Roles;
 
-use Artify\Artify\Exceptions\InsufficientPermissionsException;
-use Str;
+use Illuminate\Support\Collection;
 
 trait Roles
 {
-    public function hasAllRole($roles)
+    protected function transformRolesToCollection($roles): Collection
     {
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                if (!$this->hasRole($role)) {
-                    return false;
-                }
-            }
-        } else {
-            if (!$this->hasRole($roles)) {
-                return false;
-            }
-        }
-
-        return true;
+        return collect((array) $roles);
     }
-
-    public function hasAnyRole($roles)
+    public function hasAllRole(array $roles): bool
     {
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                if ($this->hasRole($role)) {
-                    return true;
-                }
-            }
-        } else {
-            if ($this->hasRole($roles)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function hasRole($role)
-    {
-        $roles = $this->roles()->first()->permissions;
-        $secondary_roles = $this->toArray()['permissions'] ?? [];
-        if (array_key_exists($role, $roles) && $roles[$role] === true) {
-            return true;
-        }
-        if (array_key_exists($role, $secondary_roles) && $secondary_roles[$role] === true) {
-            return true;
-        }
-        foreach ($roles as $key => $value) {
-            if ((Str::is($role, $key) || Str::is($key, $role)) && $value === true) {
-                return true;
-            }
-        }
-        foreach ($secondary_roles as $key => $value) {
-            if ((Str::is($role, $key) || Str::is($key, $role)) && $value === true) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function addPermission($permission, $value = true)
-    {
-        $permissions = $this->getPermissions() ?? [];
-        if (is_array($permission)) {
-            foreach ($permission as $key => $val) {
-                if (!array_key_exists($key, $permissions)) {
-                    $permissions = array_merge($permissions, [$key => $val]);
-                } else {
-                    throw new InsufficientPermissionsException("$key exists");
-                }
-            }
-            if (count($permissions)) {
-                return $this->setPermissions($permissions);
-            }
-
-            return false;
-        } elseif (is_string($permission)) {
-            if (!array_key_exists($permission, $permissions)) {
-                $permissions = array_merge($permissions, [$permission => $value]);
-
-                return $this->setPermissions($permissions);
-            }
-        }
-
-        return false;
-    }
-
-    public function updatePermission($permission, $value = true, $create = false)
-    {
-        $permissions = $this->getPermissions() ?? [];
-        if (array_key_exists($permission, $permissions)) {
-            $permissions[$permission] = $value;
-
-            return (bool) $this->setPermissions($permissions);
-        } elseif ($create) {
-            return (bool) $this->addPermission($permission, $value);
-        }
-
-        return false;
-    }
-
-    public function removePermission(...$permission)
-    {
-        $permissions = $this->getPermissions() ?? [];
-        if (count($permissions) === 0) {
+        $permissions = $this->getPermissions()->only($roles);
+        if (count($roles) != $permissions->count()) {
             return false;
         }
-
-        foreach ($permission as $key) {
-            if (!isset($permissions[$key])) {
-                throw new InsufficientPermissionsException("$key Permission Does not exist for " . $this->username, 404);
-            }
-            if (array_key_exists($key, $permissions)) {
-                unset($permissions[$key]);
-            }
-        }
-        if (count($permissions) === 0) {
-            $permissions = null;
-        }
-
-        return (bool) $this->setPermissions($permissions);
+        return $permissions->contains(function ($value, $role) {
+            return $this->hasRole($role);
+        });
     }
 
-    public function setPermissions($permissions)
+    public function hasAnyRole(array $roles): bool
     {
-        return $this->update(['permissions' => $permissions]);
+        return $this->transformRolesToCollection($roles)->contains(function ($role) {
+            return $this->hasRole($role);
+        });
     }
 
-    public function getPermissions()
+    public function hasRole(string $role): bool
     {
-        return $this->permissions;
+        return $this->getPermissions()->contains(function ($value, $key) use ($role) {
+            return ($key === $role || (str_is($role, $key) || str_is($key, $role))) && $value;
+        });
     }
 
-    public function inRole($slug)
+    public function updateOrCreatePermission($permission, $value = true): bool
     {
-        return $this->roles->first()->slug === $slug;
+        $permissions = $this->transformRolesToCollection(is_array($permission) ?: [$permission => $value]);
+        $permissions = $this->getUserPermissions()->merge($permissions);
+        return $this->savePermissions($permissions);
+    }
+
+    public function removePermission(...$permission): bool
+    {
+        $permissions = $this->getUserPermissions()->except($permission);
+        return (bool) $this->savePermissions($permissions);
+    }
+
+    public function savePermissions(Collection $permissions): bool
+    {
+        return $this->fill(['permissions' => $permissions->toArray()])->save();
+    }
+    public function getUserPermissions(): Collection
+    {
+        return $this->transformRolesToCollection($this->permissions ?? []);
+    }
+    public function getRolePermissions(): Collection
+    {
+        return $this->roles->pluck('permissions')->collapse();
+    }
+    public function getPermissions(): Collection
+    {
+        return $this->getRolePermissions()->merge($this->getUserPermissions());
+    }
+
+    public function inRole(string $slug): bool
+    {
+        return $this->roles()->latest()->first()->slug === $slug;
     }
 }
