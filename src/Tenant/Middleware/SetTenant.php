@@ -6,6 +6,7 @@ use Artify\Artify\Contracts\Models\Tenant;
 use Artify\Artify\Tenant\Events\TenantIdentified;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Str;
 
 class SetTenant
 {
@@ -18,8 +19,8 @@ class SetTenant
      */
     public function handle($request, Closure $next)
     {
-        optional($this->resolveTenant(session('tenant')), function ($tenant) {
-            if (!auth()->user()->{str_plural(app(Tenant::class)->getTable())}->contains('id', $tenant->id)) {
+        optional($this->resolveTenant($request->tenant ?? session('tenant')), function ($tenant) {
+            if (!auth()->user()->{Str::plural(app(Tenant::class)->getTable())}->contains('id', $tenant->id)) {
                 throw new AuthenticationException(
                     'Unauthenticated.',
                     [],
