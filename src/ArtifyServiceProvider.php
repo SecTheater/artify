@@ -16,6 +16,7 @@ use Artify\Artify\Tenant\Manager;
 use Illuminate\Database\DatabaseManager as BaseDatabaseManager;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Arr;
 
 class ArtifyServiceProvider extends ServiceProvider
 {
@@ -27,14 +28,14 @@ class ArtifyServiceProvider extends ServiceProvider
     public function boot()
     {
         Filesystem::macro('getFileName', function ($name) {
-            return array_last(explode('\\', $name));
+            return Arr::last(explode('\\', $name));
         });
         Filesystem::macro('getNamespaceFromLocation', function ($location) {
             return ucfirst(str_replace('/', '\\', $location));
         });
         Filesystem::macro('transformNamespaceToLocation', function ($location) {
             $location = str_replace('\\', '/', $location);
-            $filename = array_last(explode('/', $location));
+            $filename = Arr::last(explode('/', $location));
             return str_replace('/' . $filename, '', $location);
         });
         $this->app->singleton(Manager::class, function () {
