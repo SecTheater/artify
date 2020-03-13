@@ -3,13 +3,11 @@ namespace Artify\Artify\Artifies;
 
 use Artify\Artify\Models\Role;
 use Illuminate\Console\Command;
-use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Filesystem\Filesystem;
 use Str;
 
 class RegisterAuthorizationCommand extends Command
 {
-    use DetectsApplicationNamespace;
     /**
      * The name and signature of the console command.
      *
