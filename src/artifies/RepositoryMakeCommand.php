@@ -53,13 +53,13 @@ class RepositoryMakeCommand extends Command
             return $this->error('Repository already exists');
         }
         $this->filesystem->makeDirectory(base_path($location), 0755, true, true);
-        if (config('artify.adr.enabled') && !is_dir(app_path('App/Domain/Contracts'))) {
+        if (config('artify.is_adr') && !is_dir(app_path('App/Domain/Contracts'))) {
             $contractLocation = app_path('App/Domain/Contracts/');
             $repositoryLocation = app_path('App/Domain/Repositories/');
             $this->filesystem->makeDirectory($contractLocation, 0755, true, true);
             $this->filesystem->makeDirectory($repositoryLocation, 0755, true, true);
         }
-        if (!config('artify.adr.enabled') && !is_dir(app_path('Repositories/Contracts'))) {
+        if (!config('artify.is_adr') && !is_dir(app_path('Repositories/Contracts'))) {
             $contractLocation = app_path('Repositories/Contracts/');
             $repositoryLocation = app_path('Repositories/');
             $this->filesystem->makeDirectory($contractLocation, 0755, true, true);
@@ -70,15 +70,15 @@ class RepositoryMakeCommand extends Command
         if (isset($repositoryLocation) && !$this->filesystem->exists($repositoryLocation . 'Repository.php')) {
             copy(artify_path('artifies/stubs/Repository.stub'), $repositoryLocation . 'Repository.php');
         }
-        $namespacedModel = config('artify.adr.enabled') ? $this->filesystem->getNamespaceFromLocation(substr($location, 0, strrpos($location, '/'))) . '\\Models\\' . $model : config('artify.models.namespace') . $model;
+        $namespacedModel = config('artify.is_adr') ? $this->filesystem->getNamespaceFromLocation(substr($location, 0, strrpos($location, '/'))) . '\\Models\\' . $model : config('artify.models.namespace') . $model;
         if ($this->option('model')) {
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 $this->call('make:model', [
                     'name' => $namespacedModel,
                 ]);
             }
         }
-        if (config('artify.adr.enabled')) {
+        if (config('artify.is_adr')) {
             $namespacedModel = $namespacedModel . ";\nuse App\\Domain\\Repositories\\Repository";
         }
         $defaultRepositoryContent = $this->filesystem->get(artify_path('artifies/stubs/DummyRepository.stub'));

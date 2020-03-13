@@ -36,7 +36,7 @@ class ArtifyServiceProvider extends ServiceProvider
         Filesystem::macro('transformNamespaceToLocation', function ($location) {
             $location = str_replace('\\', '/', $location);
             $filename = Arr::last(explode('/', $location));
-            return str_replace('/' . $filename, '', $location);
+            return str_replace('/' . $filename, '', lcfirst($location));
         });
         $this->app->singleton(Manager::class, function () {
             return new Manager();
