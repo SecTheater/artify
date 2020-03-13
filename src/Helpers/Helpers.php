@@ -3,6 +3,6 @@
 if (!function_exists('artify_path')) {
     function artify_path($path = null)
     {
-        return base_path('vendor/sectheater/artify/src') . DIRECTORY_SEPARATOR . ltrim($path, '/');
+        return dirname(__DIR__,1) . DIRECTORY_SEPARATOR . ltrim($path, '/');
     }
 }
