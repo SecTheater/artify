@@ -3,13 +3,11 @@ namespace Artify\Artify\Artifies;
 
 use Artify\Artify\Models\Role;
 use Illuminate\Console\Command;
-use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Filesystem\Filesystem;
 use Str;
 
 class RegisterAuthorizationCommand extends Command
 {
-    use DetectsApplicationNamespace;
     /**
      * The name and signature of the console command.
      *
@@ -52,7 +50,7 @@ class RegisterAuthorizationCommand extends Command
         if (!count($permissions)) {
             return $this->error('Roles are not set yet, or maybe they are not an array.');
         }
-        if (config('artify.adr.enabled')) {
+        if (config('artify.is_adr')) {
             if (!count(config('artify.adr.domains'))) {
                 return $this->error('You should fill up the domains key inside config/artify.php with the domains you wish to register authorization for.');
             }
@@ -154,7 +152,7 @@ class RegisterAuthorizationCommand extends Command
                 '$this->registerPolicies();' .
                 str_repeat(
                     "\n\t\tGate::define(\'dummy-access\',\'\App\Policies\DummyPolicy@DummyAction\');",
-                    config('artify.adr.enabled') ? count($this->permissions[strtolower($this->currentDomain)]) : $this->permissions->collapse()->count()
+                    config('artify.is_adr') ? count($this->permissions[strtolower($this->currentDomain)]) : $this->permissions->collapse()->count()
                 ),
                 $this->getContent()
             )
@@ -163,7 +161,7 @@ class RegisterAuthorizationCommand extends Command
     protected function getDomainDirectory()
     {
         return optional(!$this->currentDomain, function ($domain) {
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 return app_path($this->currentDomain);
             }
             return app_path();
@@ -172,7 +170,7 @@ class RegisterAuthorizationCommand extends Command
     protected function getDomainNamespace()
     {
         return optional(!$this->currentDomain, function ($domain) {
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 return 'App\\' . $this->currentDomain . '\\';
             }
             return config('artify.models.namespace');
@@ -181,7 +179,7 @@ class RegisterAuthorizationCommand extends Command
     protected function getDomainModelNamespace()
     {
         return optional(!$this->currentDomain, function ($domain) {
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 return $this->getDomainNamespace() . 'Domain\\Models\\';
             }
             return config('artify.models.namespace');
@@ -190,7 +188,7 @@ class RegisterAuthorizationCommand extends Command
     protected function getDomainPolicyNamespace()
     {
         return optional(!$this->currentDomain, function ($domain) {
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 return $this->getDomainNamespace() . 'Domain\\Policies\\';
             }
             return "App\Policies\\";
@@ -231,7 +229,7 @@ class RegisterAuthorizationCommand extends Command
             $content = str_replace(['use NamespacedDummyModel;', ', DummyModel $dummyModel'], '', $originalContent);
         } else {
             $content = str_replace('use NamespacedDummyModel;', 'use ' . $this->getDomainModelNamespace() . ucfirst($model) . ';', $originalContent);
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 $content = str_replace('App\User', 'App\Users\Domain\Models\User', $content);
             }
         }
@@ -263,7 +261,7 @@ class RegisterAuthorizationCommand extends Command
     protected function getDomainPolicyDirectory()
     {
         return optional(!$this->currentDomain, function ($domain) {
-            if (config('artify.adr.enabled')) {
+            if (config('artify.is_adr')) {
                 return $this->getDomainDirectory() . '/Domain/Policies/';
             }
             return app_path('Policies/');
