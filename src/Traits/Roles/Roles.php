@@ -2,7 +2,7 @@
 
 namespace Artify\Artify\Traits\Roles;
 
-use Illuminate\Support\Collection;
+use Illuminate\Support\{Collection, Str};
 
 trait Roles
 {
@@ -31,7 +31,7 @@ trait Roles
     public function hasRole(string $role): bool
     {
         return $this->getPermissions()->contains(function ($value, $key) use ($role) {
-            return ($key === $role || (str_is($role, $key) || str_is($key, $role))) && $value;
+            return ($key === $role || (Str::is($role, $key) || Str::is($key, $role))) && $value;
         });
     }
 
